@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge; charset=UTF-8">
+    <meta name="viewport" content="width=device-width" initial-scale="1">
+    <title>Philips Hue Panel</title>
+    <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="components/iron-pages/iron-pages.html">
+    <link rel="import" href="components/paper-button/paper-button.html">
+    <link rel="import" href="components/paper-slider/paper-slider.html">
+    <link rel="import" href="components/paper-tabs/paper-tabs.html">
+    <style is="custom-style">
+        paper-button {
+            display: block;
+            margin: 8px 0;
+        }
+        paper-slider {
+            width: 100%;
+        }
+        paper-slider.red {
+            --paper-slider-knob-color: #FF0C5E;
+            --paper-slider-knob-start-border-color: #FF0C5E;
+            --paper-slider-active-color: #FF0C5E;
+            --paper-slider-pin-color: #FF0C5E;
+        }
+        paper-slider.green {
+            --paper-slider-knob-color: #0CEA8A;
+            --paper-slider-knob-start-border-color: #0CEA8A;
+            --paper-slider-active-color: #0CEA8A;
+            --paper-slider-pin-color: #0CEA8A;
+        }
+        paper-slider.blue {
+            --paper-slider-knob-color: #1AA5FF;
+            --paper-slider-knob-start-border-color: #1AA5FF;
+            --paper-slider-active-color: #1AA5FF;
+            --paper-slider-pin-color: #1AA5FF;
+        }
+    </style>
+</head>
+<body>
+
+    <hr>
+
+    <paper-tabs selected="1">
+        <paper-tab>RGB</paper-tab>
+        <paper-tab>HSV</paper-tab>
+        <paper-tab>XY</paper-tab>
+        <paper-tab>CT</paper-tab>
+    </paper-tabs>
+
+    <iron-pages selected="1">
+    </iron-pages>
+
+    <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
+    <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
+    <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+
+    <hr>
+
+    <paper-button id="edit" class="nodecg-configure" raised>Edit Connection Settings</paper-button>
+</body>
+</html>

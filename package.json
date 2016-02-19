@@ -1,0 +1,24 @@
+{
+  "name": "nodecg-hue",
+  "version": "0.0.0",
+  "dependencies": {
+    "node-hue-api": "^2.0.1"
+  },
+  "homepage": "https://benfairclough.com",
+  "author": "Ben Fairclough",
+  "description": "Control panel for Philips Hue lighting",
+  "license": "MIT",
+  "nodecg": {
+    "compatibleRange": "~0.7.0",
+    "dashboardPanels": [
+      {
+        "name": "hue-panel",
+        "title": "Philips Hue",
+        "width": 3,
+        "headerColor": "#FF0C5D",
+        "file": "panel.html",
+        "faIcon": "fa-lightbulb-o"
+      }
+    ]
+  }
+}
