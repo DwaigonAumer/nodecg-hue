@@ -1,13 +1,17 @@
 {
   "name": "nodecg-hue",
   "version": "0.0.0",
-  "dependencies": {
-    "node-hue-api": "^2.0.1"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bfaircloo/nodecg-hue.git"
   },
   "homepage": "https://benfairclough.com",
   "author": "Ben Fairclough",
   "description": "Control panel for Philips Hue lighting",
   "license": "MIT",
+  "dependencies": {
+    "node-hue-api": "^2.0.1"
+  },
   "nodecg": {
     "compatibleRange": "~0.7.0",
     "dashboardPanels": [
