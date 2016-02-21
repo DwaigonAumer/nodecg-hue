@@ -10,6 +10,7 @@
     <link rel="import" href="components/paper-button/paper-button.html">
     <link rel="import" href="components/paper-slider/paper-slider.html">
     <link rel="import" href="components/paper-tabs/paper-tabs.html">
+    <link href="./panel.css" rel="stylesheet">
     <style is="custom-style">
         paper-button {
             display: block;
@@ -39,8 +40,8 @@
     </style>
 </head>
 <body>
-
-    <hr>
+    
+    <div id="color-preview"></div>
 
     <paper-tabs selected="0">
         <paper-tab>RGB</paper-tab>
@@ -49,11 +50,13 @@
         <paper-tab>CT</paper-tab>
     </paper-tabs>
 
-    <iron-pages selected="1">
+    <iron-pages selected="0">
+        <div>
+            <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
+            <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
+            <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+        </div>
     </iron-pages>
-    <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
-    <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
-    <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
 
     <hr>
 
