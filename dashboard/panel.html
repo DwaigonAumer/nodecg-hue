@@ -12,6 +12,12 @@
     <link rel="import" href="components/paper-tabs/paper-tabs.html">
     <link href="./panel.css" rel="stylesheet">
     <style is="custom-style">
+        paper-tabs {
+          --paper-tabs-selection-bar-color: #FF0C5D;
+        }
+        paper-tab {
+          --paper-tab-ink: #FF0C5D;
+        }
         paper-button {
             display: block;
             margin: 8px 0;
@@ -21,21 +27,66 @@
         }
         paper-slider.red {
             --paper-slider-knob-color: #FF0C5E;
+            --paper-slider-knob-start-color: #FF0C5E;
             --paper-slider-knob-start-border-color: #FF0C5E;
             --paper-slider-active-color: #FF0C5E;
             --paper-slider-pin-color: #FF0C5E;
         }
         paper-slider.green {
             --paper-slider-knob-color: #0CEA8A;
+            --paper-slider-knob-start-color: #0CEA8A;
             --paper-slider-knob-start-border-color: #0CEA8A;
             --paper-slider-active-color: #0CEA8A;
             --paper-slider-pin-color: #0CEA8A;
         }
         paper-slider.blue {
             --paper-slider-knob-color: #1AA5FF;
+            --paper-slider-knob-start-color: #1AA5FF;
             --paper-slider-knob-start-border-color: #1AA5FF;
             --paper-slider-active-color: #1AA5FF;
             --paper-slider-pin-color: #1AA5FF;
+        }
+        paper-slider.hue {
+            --paper-slider-knob-color: #FF0000;
+            --paper-slider-knob-start-color: #FF0000;
+            --paper-slider-knob-start-border-color: #FF0000;
+            --paper-slider-active-color: #FF0000;
+            --paper-slider-pin-color: #888888;
+        }
+        paper-slider.sat {
+            --paper-slider-knob-color: #888888;
+            --paper-slider-knob-start-color: #888888;
+            --paper-slider-knob-start-border-color: #888888;
+            --paper-slider-active-color: #888888;
+            --paper-slider-pin-color: #888888;
+        }
+        paper-slider.val {
+            --paper-slider-knob-color: #000000;
+            --paper-slider-knob-start-color: #000000;
+            --paper-slider-knob-start-border-color: #000000;
+            --paper-slider-active-color: #000000;
+            --paper-slider-pin-color: #000000;
+        }
+        paper-slider.x {
+            --paper-slider-knob-color: #888888;
+            --paper-slider-knob-start-color: #888888;
+            --paper-slider-knob-start-border-color: #888888;
+            --paper-slider-active-color: #888888;
+            --paper-slider-pin-color: #888888;
+        }
+        paper-slider.y {
+            --paper-slider-knob-color: #888888;
+            --paper-slider-knob-start-color: #888888;
+            --paper-slider-knob-start-border-color: #888888;
+            --paper-slider-active-color: #888888;
+            --paper-slider-pin-color: #888888;
+        }
+        paper-slider.ct {
+            --paper-slider-knob-color: rgb(92, 173, 255);
+            --paper-slider-knob-start-color: rgb(92, 173, 255);
+            --paper-slider-knob-start-border-color: rgb(92, 173, 255);
+            --paper-slider-active-color: rgb(92, 173, 255);
+            --paper-slider-pin-color: rgb(92, 173, 255);
         }
     </style>
 </head>
@@ -44,17 +95,29 @@
     <div id="color-preview"></div>
 
     <paper-tabs selected="0">
-        <paper-tab>RGB</paper-tab>
-        <paper-tab>HSV</paper-tab>
-        <paper-tab>XY</paper-tab>
-        <paper-tab>CT</paper-tab>
+        <paper-tab class="tab-colors">RGB</paper-tab>
+        <paper-tab class="tab-colors">HSV</paper-tab>
+        <paper-tab class="tab-colors">XY</paper-tab>
+        <paper-tab class="tab-colors">CT</paper-tab>
     </paper-tabs>
 
     <iron-pages selected="0">
-        <div>
+        <div class="slider-group rgb">
             <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
             <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
             <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+        </div>
+        <div class="slider-group hue">
+            <paper-slider class="hue" min="0" max="359" value="0" editable pin></paper-slider>
+            <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
+            <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
+        </div>
+        <div class="slider-group xy">
+            <paper-slider class="x" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
+            <paper-slider class="y" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
+        </div>
+        <div class="slider-group ct">
+            <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
         </div>
     </iron-pages>
 

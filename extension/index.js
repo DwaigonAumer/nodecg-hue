@@ -55,10 +55,19 @@ module.exports = function(nodecg) {
       hueApi.getConfig().then(logResult).done();
    }
 
-   var setRgbColor = function(data) {
-      var hsv = rgbToHsv(data.r, data.g, data.b);
-      var ls = hue.lightState.create().hsb(hsv.h, hsv.s, hsv.v);
+   var setColor = function(data) {
+      if (data.mode == "rgb") {
+         var hsv = rgbToHsv(data.color.r, data.color.g, data.color.b);
+         var ls = hue.lightState.create().hsb(hsv.h, hsv.s, hsv.v);
+      } else if (data.mode == "hsv") {
+         var ls = hue.lightState.create().hsb(data.color.h, data.color.s, data.color.v);
+      } else if (data.mode == "xy") {
+         var ls = hue.lightState.create().xy(data.color.x, data.color.y);
+      } else if (data.mode == "ct") {
+         var ls = hue.lightState.create().ct(data.color.ct);
+      }
       hueApi.setGroupLightState(0, ls).then(logResult).done();
+      logResult(data);
    }
 
    /* NodeCG Communications */
@@ -69,5 +78,5 @@ module.exports = function(nodecg) {
 
    nodecg.listenFor('setupHueApi', setupHueApi);
 
-   nodecg.listenFor('rgbValueChanged', setRgbColor);
+   nodecg.listenFor('colorValueChanged', setColor);
 }
