@@ -1,4 +1,58 @@
-#color-preview {
+paper-button#master-send {
+   margin: 8px 0px;
+}
+
+paper-button.btn-thin {
+   padding: 4px 0px;
+   width: 47%;
+}
+
+paper-button.btn-selector {
+   background: #997FE1;
+   color: white;
+}
+
+paper-button {
+   background: #ECECEC;
+}
+
+paper-button[toggles][active] {
+   background: #8AF0C4;
+}
+
+paper-tabs {
+   padding-bottom: 5px;
+   background: #F5F5F5;
+}
+
+#scrollable {
+   max-height: 130px;
+   padding: 0;
+}
+
+#master-send-container {
+   display: flex;
+   justify-content: space-around;
+}
+
+#master-send {
+}
+
+.scroll-container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-around;
+}
+
+.scroll-container paper-button {
+   margin-bottom: 12px;
+}
+
+.color-preview {
    background-color: #000;
    height: 50px;
+}
+
+.input-transition-time {
+   width: 30%;
 }

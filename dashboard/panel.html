@@ -10,17 +10,22 @@
     <link rel="import" href="components/paper-button/paper-button.html">
     <link rel="import" href="components/paper-slider/paper-slider.html">
     <link rel="import" href="components/paper-tabs/paper-tabs.html">
+    <link rel="import" href="components/paper-toggle-button/paper-toggle-button.html">
+    <link rel="import" href="components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+    <link rel="import" href="components/paper-radio-group/paper-radio-group.html">
+    <link rel="import" href="components/paper-radio-button/paper-radio-button.html">
     <link href="./panel.css" rel="stylesheet">
     <style is="custom-style">
+        paper-toggle-button.green {
+            --paper-toggle-button-checked-bar-color:  #0CEA8A;
+            --paper-toggle-button-checked-button-color:  #0CEA8A;
+            --paper-toggle-button-checked-ink-color: #0CEA8A;
+        }
         paper-tabs {
           --paper-tabs-selection-bar-color: #FF0C5D;
         }
         paper-tab {
           --paper-tab-ink: #FF0C5D;
-        }
-        paper-button {
-            display: block;
-            margin: 8px 0;
         }
         paper-slider {
             width: 100%;
@@ -88,41 +93,99 @@
             --paper-slider-active-color: rgb(92, 173, 255);
             --paper-slider-pin-color: rgb(92, 173, 255);
         }
+        paper-radio-button {
+            --paper-radio-button-unchecked-color: #E1E1E1;
+            --paper-radio-button-checked-color: #FF0C5D;
+            --paper-radio-button-label-color: #444;
+        }
     </style>
 </head>
 <body>
-    
-    <div id="color-preview"></div>
 
-    <paper-tabs selected="0">
-        <paper-tab class="tab-colors">RGB</paper-tab>
-        <paper-tab class="tab-colors">HSV</paper-tab>
-        <paper-tab class="tab-colors">XY</paper-tab>
-        <paper-tab class="tab-colors">CT</paper-tab>
+    <paper-tabs id="light-select-tabs" selected="0">
+        <paper-tab class="light-select-tab">Individual Lights</paper-tab>
+        <paper-tab class="light-select-tab">Group of Lights</paper-tab>
     </paper-tabs>
+    <iron-pages id="light-select-pages" selected="0">
+        <paper-dialog-scrollable>
+            <div class="scroll-container">
+                <paper-button class="btn-selector btn-thin" raised>Select All</paper-button>
+                <paper-button class="btn-selector btn-thin" raised>Select None</paper-button>
+                <paper-button toggles raised>1</paper-button>
+                <paper-button toggles raised>2</paper-button>
+                <paper-button toggles raised>3</paper-button>
+                <paper-button toggles raised>4</paper-button>
+                <paper-button toggles raised>5</paper-button>
+                <paper-button toggles raised>6</paper-button>
+                <paper-button toggles raised>7</paper-button>
+                <paper-button toggles raised>8</paper-button>
+                <paper-button toggles raised>9</paper-button>
+                <paper-button toggles raised>10</paper-button>
+                <paper-button toggles raised>11</paper-button>
+                <paper-button toggles raised>12</paper-button>
+            </div>
+        </paper-dialog-scrollable>
+        <paper-dialog-scrollable>
+            <div class="scroll-container">
+                <paper-button class="btn-thin" toggles raised>Potlights</paper-button>
+                <paper-button class="btn-thin" toggles raised>Stream Lights</paper-button>
+                <paper-button class="btn-thin" toggles raised>Spotlights</paper-button>
+                <paper-button class="btn-thin" toggles raised>Floor Lights</paper-button>
+                <paper-button class="btn-thin" toggles raised>Lightstrips</paper-button>
+            </div>
+        </paper-dialog-scrollable>
+    </iron-pages>
 
-    <iron-pages selected="0">
+    <paper-tabs id="color-picker-tabs" selected="0">
+        <paper-tab class="color-picker-tab">RGB</paper-tab>
+        <paper-tab class="color-picker-tab">HSV</paper-tab>
+        <paper-tab class="color-picker-tab">XY</paper-tab>
+        <paper-tab class="color-picker-tab">CT</paper-tab>
+        <paper-tab class="color-picker-tab">Scenes</paper-tab>
+    </paper-tabs>
+    <iron-pages id="color-picker-pages" selected="0">
         <div class="slider-group rgb">
             <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
             <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
             <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+            <div class="color-preview"></div>
         </div>
         <div class="slider-group hue">
             <paper-slider class="hue" min="0" max="359" value="0" editable pin></paper-slider>
             <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
             <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
+            <div class="color-preview"></div>
         </div>
         <div class="slider-group xy">
             <paper-slider class="x" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
             <paper-slider class="y" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
+            <div class="color-preview"></div>
         </div>
         <div class="slider-group ct">
             <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
+            <div class="color-preview"></div>
         </div>
+        <paper-dialog-scrollable>
+            <paper-radio-group selected="4" class="scroll-container">
+                <paper-radio-button name="0" raised>Movies</paper-radio-button>
+                <paper-radio-button name="1" raised>Romance</paper-radio-button>
+                <paper-radio-button name="2" raised>Video Games</paper-radio-button>
+                <paper-radio-button name="3" raised>Studying</paper-radio-button>
+                <paper-radio-button name="4" raised>Dinner</paper-radio-button>
+                <paper-radio-button name="5" raised>Hide & Seek</paper-radio-button>
+                <paper-radio-button name="6" raised>Dancing</paper-radio-button>
+                <paper-radio-button name="7" raised>Streaming</paper-radio-button>
+            </paper-radio-group>
+        </paper-dialog-scrollable>
     </iron-pages>
 
-    <hr>
 
-    <paper-button id="edit" class="nodecg-configure" raised>Edit Connection Settings</paper-button>
+    <hr></hr>
+
+    <div id="master-send-container">
+        <paper-toggle-button class="green" checked>Off/On</paper-toggle-button>
+        <paper-input class="input-transition-time" type="number" label="Transition Time (ms)" placeholder="400" min="0" max="600000"></paper-input>
+        <paper-button id="master-send" class="nodecg-success" raised>Take</paper-button>
+    </div>
 </body>
 </html>

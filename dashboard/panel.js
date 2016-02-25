@@ -17,14 +17,14 @@ var ctInput, ctSlider;
 
 document.addEventListener('WebComponentsReady', function() {
    // global elements
-   colorPreview = document.querySelector('#color-preview');
+   colorPreview = document.querySelectorAll('.color-preview');
 
-   rInput = document.querySelector('.red input#input');
-   gInput = document.querySelector('.green input#input');
-   bInput = document.querySelector('.blue input#input');
-   rSlider = document.querySelector('.red #sliderContainer');
-   gSlider = document.querySelector('.green #sliderContainer');
-   bSlider = document.querySelector('.blue #sliderContainer');
+   rInput = document.querySelector('paper-slider.red input#input');
+   gInput = document.querySelector('paper-slider.green input#input');
+   bInput = document.querySelector('paper-slider.blue input#input');
+   rSlider = document.querySelector('paper-slider.red #sliderContainer');
+   gSlider = document.querySelector('paper-slider.green #sliderContainer');
+   bSlider = document.querySelector('paper-slider.blue #sliderContainer');
 
    hInput = document.querySelector('.hue input#input');
    sInput = document.querySelector('.sat input#input');
@@ -42,10 +42,17 @@ document.addEventListener('WebComponentsReady', function() {
    ctSlider = document.querySelector('.ct #sliderContainer');
 
    // listeners for tab selections
-   var tabs = document.querySelectorAll('.tab-colors');
-   for (var i = tabs.length - 1; i >= 0; i--) {
-      tabs[i].addEventListener('click', function() {
-         document.querySelector('iron-pages').selected = this.closest('paper-tabs').selected;
+   var colorPickerTabs = document.querySelectorAll('.color-picker-tab');
+   for (var i = colorPickerTabs.length - 1; i >= 0; i--) {
+      colorPickerTabs[i].addEventListener('click', function() {
+         document.querySelector('iron-pages#color-picker-pages').selected = this.closest('paper-tabs').selected;
+      });
+   }
+
+   var lightSelectTabs = document.querySelectorAll('.light-select-tab');
+   for (var i = lightSelectTabs.length - 1; i >= 0; i--) {
+      lightSelectTabs[i].addEventListener('click', function() {
+         document.querySelector('iron-pages#light-select-pages').selected = this.closest('paper-tabs').selected;
       });
    }
 
@@ -131,7 +138,9 @@ function updatePreviewColor(event, mode) {
       var rgb = xy2rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue);
       color = "rgb(" + parseInt((rgb.r * 255), 10) + ", " + parseInt((rgb.g * 255), 10) + ", " + parseInt((rgb.b * 255), 10) + ")";
    }
-   colorPreview.style.backgroundColor = color;
+   for (var i = colorPreview.length - 1; i >= 0; i--) {
+      colorPreview[i].style.backgroundColor = color;
+   }
 }
 
 
