@@ -1,6 +1,12 @@
 # nodecg-hue
 > WIP NodeCG bundle to control Philips Hue lighting system
 
+## Extra Usage Steps
+Change directories to ```bundles/nodecg-hue``` and run the following command
+```
+browserify dashboard/panel.js -o panel-browserified.js
+```
+
 ## Todo
 ### Short Term
 - multi selection of connected lights through single and group selections (which light state will be applied to)

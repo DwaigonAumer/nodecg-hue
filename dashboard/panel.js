@@ -1,11 +1,12 @@
+var hue = require('node-hue-api');
 var host = nodecg.bundleConfig.host;
 var username = nodecg.bundleConfig.username;
 
 if (host.length && username.length) {
-   nodecg.sendMessageToBundle('setupHueApi', 'nodecg-hue', [{'id': username, 'ipaddress': host}]);
+   setupHueApi();
 }
 else {
-   nodecg.sendMessageToBundle('searchForBridge', 'nodecg-hue');
+   hue.nupnpSearch().then(setupHueApi).done();
 }
 
 // global elements
@@ -95,6 +96,30 @@ document.addEventListener('WebComponentsReady', function() {
    
 });
 
+function logResult(result) {
+   nodecg.log.debug(JSON.stringify(result, null, 2));
+}
+
+function setupHueApi() {
+   window.hueApi = new hue.HueApi(host, username);
+   hueApi.getConfig().then(logResult).done();
+}
+
+function setColor(data) {
+   if (data.mode == "rgb") {
+      var hsv = rgbToHsv(data.color.r, data.color.g, data.color.b);
+      var ls = hue.lightState.create().hsb(hsv.h, hsv.s, hsv.v);
+   } else if (data.mode == "hsv") {
+      var ls = hue.lightState.create().hsb(data.color.h, data.color.s, data.color.v);
+   } else if (data.mode == "xy") {
+      var ls = hue.lightState.create().xy(data.color.x, data.color.y);
+   } else if (data.mode == "ct") {
+      var ls = hue.lightState.create().ct(data.color.ct);
+   }
+   hueApi.setGroupLightState(0, ls).then(logResult).done();
+   logResult(data);
+}
+
 function sendColorValueChanged(event, mode) {
    if (mode == 'rgb') {
       var color = {
@@ -119,7 +144,7 @@ function sendColorValueChanged(event, mode) {
       };
    }
 
-   nodecg.sendMessageToBundle('colorValueChanged', 'nodecg-hue', {'mode': mode, color: color});
+   setColor({'mode': mode, color: color});
 }
 
 function updatePreviewColor(event, mode) {
@@ -143,8 +168,47 @@ function updatePreviewColor(event, mode) {
    }
 }
 
-
 // utility functions
+// http://www.rapidtables.com/convert/color/rgb-to-hsv.htm
+function rgbToHsv(r, g, b) {
+   var h = 0;
+   var s = 100;
+   var v = 100;
+
+   var r1 = (r / 255);
+   var g1 = (g / 255);
+   var b1 = (b / 255);
+   var cMax = Math.max(r1, g1, b1);
+   var cMin = Math.min(r1, g1, b1);
+   var cDelta = cMax - cMin;
+
+   // calculate hue
+   if (cDelta === 0) {
+      h = 0;
+   } else if(cMax == r1) {
+      h = 60 * (((g1 - b1) / cDelta) % 6);
+   } else if(cMax == g1) {
+      h = 60 * (((b1 - r1) / cDelta) + 2);
+   } else if(cMax == b1) {
+      h = 60 * (((r1 - g1) / cDelta) + 4);
+   }
+   if (h < 0) {
+      h = 360 + h;
+   }
+
+   // calculate saturation
+   if (cMax == 0) {
+      s = 0;
+   } else {
+      s = (cDelta / cMax) * 100;
+   }
+
+   // calculate value (which in out case is brightness)
+   v = cMax * 100;
+   
+   return {'h': Math.round(h), 's': Math.round(s), 'v': Math.round(v)}
+}
+
 function hsv2hsl(h, s, v) {
    l1 = (2 - s) * v;
    s1 = s * v;

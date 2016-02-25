@@ -12,6 +12,9 @@
   "dependencies": {
     "node-hue-api": "^2.0.1"
   },
+  "devDependencies": {
+    "browserify": "^13.0.0"
+  },
   "nodecg": {
     "compatibleRange": "~0.7.0",
     "dashboardPanels": [
