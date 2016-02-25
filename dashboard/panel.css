@@ -20,6 +20,10 @@ paper-button[toggles][active] {
    background: #8AF0C4;
 }
 
+#scenes paper-radio-button {
+   width: 47%;
+}
+
 paper-tabs {
    padding-bottom: 5px;
    background: #F5F5F5;

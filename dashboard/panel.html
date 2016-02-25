@@ -108,7 +108,7 @@
     </paper-tabs>
     <iron-pages id="light-select-pages" selected="0">
         <paper-dialog-scrollable>
-            <div class="scroll-container">
+            <div id="single-light" class="scroll-container">
                 <paper-button class="btn-selector btn-thin" raised>Select All</paper-button>
                 <paper-button class="btn-selector btn-thin" raised>Select None</paper-button>
                 <paper-button toggles raised>1</paper-button>
@@ -126,7 +126,7 @@
             </div>
         </paper-dialog-scrollable>
         <paper-dialog-scrollable>
-            <div class="scroll-container">
+            <div id="group-light" class="scroll-container">
                 <paper-button class="btn-thin" toggles raised>Potlights</paper-button>
                 <paper-button class="btn-thin" toggles raised>Stream Lights</paper-button>
                 <paper-button class="btn-thin" toggles raised>Spotlights</paper-button>
@@ -165,17 +165,17 @@
             <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
             <div class="color-preview"></div>
         </div>
-        <paper-dialog-scrollable>
-            <paper-radio-group selected="4" class="scroll-container">
-                <paper-radio-button name="0" raised>Movies</paper-radio-button>
-                <paper-radio-button name="1" raised>Romance</paper-radio-button>
-                <paper-radio-button name="2" raised>Video Games</paper-radio-button>
-                <paper-radio-button name="3" raised>Studying</paper-radio-button>
-                <paper-radio-button name="4" raised>Dinner</paper-radio-button>
-                <paper-radio-button name="5" raised>Hide & Seek</paper-radio-button>
-                <paper-radio-button name="6" raised>Dancing</paper-radio-button>
-                <paper-radio-button name="7" raised>Streaming</paper-radio-button>
-            </paper-radio-group>
+        <paper-dialog-scrollable id="scenes-scrollable">
+            <div id="scenes" class="scroll-container" selected="1">
+                <paper-radio-button name="1">Movies</paper-radio-button>
+                <paper-radio-button name="2">Romance</paper-radio-button>
+                <paper-radio-button name="3">Video Games</paper-radio-button>
+                <paper-radio-button name="4">Studying</paper-radio-button>
+                <paper-radio-button name="5">Dinner</paper-radio-button>
+                <paper-radio-button name="6">Hide & Seek</paper-radio-button>
+                <paper-radio-button name="7">Dancing</paper-radio-button>
+                <paper-radio-button name="8">Streaming</paper-radio-button>
+            </div>
         </paper-dialog-scrollable>
     </iron-pages>
 

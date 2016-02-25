@@ -1,6 +1,15 @@
+// hue
 var hue = require('node-hue-api');
 var host = nodecg.bundleConfig.host;
 var username = nodecg.bundleConfig.username;
+var config, lights, groups, rules, scenes, schedules, sensors
+// dashboard
+var colorPreview
+var rInput, gInput, bInput, rSlider, gSlider, bSlider;
+var hInput, sInput, vInput, hSlider, sSlider, vSlider;
+var xInput, yInput, xSlider, ySlider;
+var ctInput, ctSlider;
+var selectedScene;
 
 if (host.length && username.length) {
    setupHueApi();
@@ -9,14 +18,10 @@ else {
    hue.nupnpSearch().then(setupHueApi).done();
 }
 
-// global elements
-var colorPreview
-var rInput, gInput, bInput, rSlider, gSlider, bSlider;
-var hInput, sInput, vInput, hSlider, sSlider, vSlider;
-var xInput, yInput, xSlider, ySlider;
-var ctInput, ctSlider;
-
 document.addEventListener('WebComponentsReady', function() {
+   // update ui with latest information
+   refreshHueData();
+
    // global elements
    colorPreview = document.querySelectorAll('.color-preview');
 
@@ -43,13 +48,6 @@ document.addEventListener('WebComponentsReady', function() {
    ctSlider = document.querySelector('.ct #sliderContainer');
 
    // listeners for tab selections
-   var colorPickerTabs = document.querySelectorAll('.color-picker-tab');
-   for (var i = colorPickerTabs.length - 1; i >= 0; i--) {
-      colorPickerTabs[i].addEventListener('click', function() {
-         document.querySelector('iron-pages#color-picker-pages').selected = this.closest('paper-tabs').selected;
-      });
-   }
-
    var lightSelectTabs = document.querySelectorAll('.light-select-tab');
    for (var i = lightSelectTabs.length - 1; i >= 0; i--) {
       lightSelectTabs[i].addEventListener('click', function() {
@@ -57,28 +55,12 @@ document.addEventListener('WebComponentsReady', function() {
       });
    }
 
-   // listeners that will notify server of final color change
-   rInput.addEventListener('change', function() { sendColorValueChanged(event, 'rgb'); });
-   gInput.addEventListener('change', function() { sendColorValueChanged(event, 'rgb'); });
-   bInput.addEventListener('change', function() { sendColorValueChanged(event, 'rgb'); });
-   rSlider.addEventListener('click', function() { sendColorValueChanged(event, 'rgb'); });
-   gSlider.addEventListener('click', function() { sendColorValueChanged(event, 'rgb'); });
-   bSlider.addEventListener('click', function() { sendColorValueChanged(event, 'rgb'); });
-
-   hInput.addEventListener('change', function() { sendColorValueChanged(event, 'hsv'); });
-   sInput.addEventListener('change', function() { sendColorValueChanged(event, 'hsv'); });
-   vInput.addEventListener('change', function() { sendColorValueChanged(event, 'hsv'); });
-   hSlider.addEventListener('click', function() { sendColorValueChanged(event, 'hsv'); });
-   sSlider.addEventListener('click', function() { sendColorValueChanged(event, 'hsv'); });
-   vSlider.addEventListener('click', function() { sendColorValueChanged(event, 'hsv'); });
-
-   xInput.addEventListener('change', function() { sendColorValueChanged(event, 'xy'); });
-   yInput.addEventListener('change', function() { sendColorValueChanged(event, 'xy'); });
-   xSlider.addEventListener('click', function() { sendColorValueChanged(event, 'xy'); });
-   ySlider.addEventListener('click', function() { sendColorValueChanged(event, 'xy'); });
-
-   ctInput.addEventListener('change', function() { sendColorValueChanged(event, 'ct'); });
-   ctSlider.addEventListener('click', function() { sendColorValueChanged(event, 'ct'); });
+   var colorPickerTabs = document.querySelectorAll('.color-picker-tab');
+   for (var i = colorPickerTabs.length - 1; i >= 0; i--) {
+      colorPickerTabs[i].addEventListener('click', function() {
+         document.querySelector('iron-pages#color-picker-pages').selected = this.closest('paper-tabs').selected;
+      });
+   }
 
    // listeners that will notify color-preview of immediate color changes
    rInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'rgb'); });
@@ -93,8 +75,63 @@ document.addEventListener('WebComponentsReady', function() {
    yInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
 
    ctInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'ct'); });
+
+   // listener that will send lightState to selected lights
+   document.querySelector('#master-send').addEventListener('click', sendLightState);
    
 });
+
+function sendLightState(event) {
+   var picker = getPickerData();
+   var on = document.querySelector('#master-send-container paper-toggle-button').active;
+   var transitionTimeInput = document.querySelector('#master-send-container paper-input');
+   var transitionTime = (transitionTimeInput.value) ? transitionTimeInput.value : transitionTimeInput.placeholder;
+   
+   if (transitionTime > 0) {
+      transitionTime /= 100;
+   }
+
+   if(on) {
+      if (picker.mode == "rgb") {
+         var hsv = rgbToHsv(picker.color.r, picker.color.g, picker.color.b);
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).hsb(hsv.h, hsv.s, hsv.v);
+      } else if (picker.mode == "hsv") {
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).hsb(picker.color.h, picker.color.s, picker.color.v);
+      } else if (picker.mode == "xy") {
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).xy(picker.color.x, picker.color.y);
+      } else if (picker.mode == "ct") {
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).ct(picker.color.ct);
+      } else if (picker.mode == "scene") {
+         var ls = {'on': true, 'transitiontime': transitionTime, 'scene': picker.color.scene};
+      }
+   } else {
+      var ls = hue.lightState.create().off().transitiontime(transitionTime);
+   }
+
+   var activeSelectionTab = document.querySelector('paper-tabs#light-select-tabs').selected
+
+   if (activeSelectionTab == 0) {
+      // individual lights
+      var lbs = document.querySelectorAll('#single-light.scroll-container paper-button');
+      for (var i = 0; i < lbs.length; i++) {
+         if (lbs[i].active) {
+            var lightId = lbs[i].textContent.trim();
+            hueApi.setLightState(lightId, ls).then(logResult).done();
+         }
+      }
+
+   } else if(activeSelectionTab == 1) {
+      // group lights
+      var gbs = document.querySelectorAll('#group-light.scroll-container paper-button');
+      for (var i = 0; i < gbs.length; i++) {
+         if (gbs[i].active) {
+            hueApi.setGroupLightState(i+1, ls).then(logResult).done();
+         }
+      }
+   }
+
+   logResult(picker);
+}
 
 function logResult(result) {
    nodecg.log.debug(JSON.stringify(result, null, 2));
@@ -102,49 +139,160 @@ function logResult(result) {
 
 function setupHueApi() {
    window.hueApi = new hue.HueApi(host, username);
-   hueApi.getConfig().then(logResult).done();
 }
 
-function setColor(data) {
-   if (data.mode == "rgb") {
-      var hsv = rgbToHsv(data.color.r, data.color.g, data.color.b);
-      var ls = hue.lightState.create().hsb(hsv.h, hsv.s, hsv.v);
-   } else if (data.mode == "hsv") {
-      var ls = hue.lightState.create().hsb(data.color.h, data.color.s, data.color.v);
-   } else if (data.mode == "xy") {
-      var ls = hue.lightState.create().xy(data.color.x, data.color.y);
-   } else if (data.mode == "ct") {
-      var ls = hue.lightState.create().ct(data.color.ct);
+function refreshHueData() {
+   hueApi.fullState(function(err, data) {
+      if (err) throw err;
+
+      config = data.config;
+      lights = data.lights;
+      groups = data.groups;
+      rules = data.rules;
+      scenes = data.scenes;
+      schedules = data.schedules;
+      sensors = data.sensors;
+      
+      refreshLightsUi();
+      refreshGroupsUi();
+      refreshScenesUi();
+   })
+}
+
+function refreshLightsUi() {
+   // clear old light buttons
+   var lightButtonContainer = document.querySelector('#single-light.scroll-container');
+   while (lightButtonContainer.lastChild) {
+      lightButtonContainer.removeChild(lightButtonContainer.lastChild);
    }
-   hueApi.setGroupLightState(0, ls).then(logResult).done();
-   logResult(data);
+
+   // add new light buttons
+   var selectAll = document.createElement('paper-button');
+   selectAll.className = "btn-selector btn-thin";
+   selectAll.textContent = "Select All";
+   selectAll.addEventListener('click', selectAllLights);
+   lightButtonContainer.appendChild(selectAll);
+
+   var selectNone = document.createElement('paper-button');
+   selectNone.className = "btn-selector btn-thin";
+   selectNone.textContent = "Select None";
+   selectNone.addEventListener('click', selectNoLights);
+   lightButtonContainer.appendChild(selectNone);
+
+   for (var i = 1; i <= Object.keys(lights).length; i++) {
+      var lightButton = document.createElement('paper-button');
+      lightButton.textContent = i;
+      lightButton.setAttribute('toggles', '');
+      lightButton.setAttribute('raised', '');
+      lightButtonContainer.appendChild(lightButton);
+   }
 }
 
-function sendColorValueChanged(event, mode) {
-   if (mode == 'rgb') {
+function refreshGroupsUi() {
+   // clear old group buttons
+   var groupButtonContainer = document.querySelector('#group-light.scroll-container');
+   while (groupButtonContainer.lastChild) {
+      groupButtonContainer.removeChild(groupButtonContainer.lastChild);
+   }
+
+   // add new group buttons
+   for (var i = 1; i < Object.keys(groups).length; i++) {
+      var groupButton = document.createElement('paper-button');
+      groupButton.textContent = groups[i].name;
+      groupButton.className = "btn-thin";
+      groupButton.setAttribute('toggles', '');
+      groupButton.setAttribute('raised', '');
+      groupButtonContainer.appendChild(groupButton);
+   }
+}
+
+function refreshScenesUi() {
+   // clear old scenes buttons
+   var scenesRadioGroup = document.querySelector('#scenes.scroll-container');
+
+   if (scenesRadioGroup !== null) {
+      while (scenesRadioGroup.lastChild) {
+         scenesRadioGroup.removeChild(scenesRadioGroup.lastChild);
+      }
+   }
+
+   // add new scenes buttons
+   for (var i = 1; i < Object.keys(scenes).length; i++) {
+      var sceneId = Object.keys(scenes)[i];
+      var scenesButton = document.createElement('paper-radio-button');
+      scenesButton.setAttribute('name', i);
+      if (i == 1) { scenesButton.setAttribute('checked', '') };
+      scenesButton.querySelector('#radioLabel').textContent = scenes[sceneId].name;
+      scenesButton.addEventListener('click', clearLastSceneSelection);
+      scenesRadioGroup.appendChild(scenesButton);
+   }
+}
+
+function selectAllLights(event) {
+   var lbs = document.querySelectorAll('#single-light paper-button[toggles]');
+   for (var i = 0; i < lbs.length; i++) {
+      lbs[i].setAttribute('active', '');
+   }
+}
+
+function selectNoLights(event) {
+   var lbs = document.querySelectorAll('#single-light paper-button');
+   for (var i = 0; i < lbs.length; i++) {
+      lbs[i].removeAttribute('active');
+   }
+}
+
+// create radio group functionality
+// this doesn't use paper-radio-group becasue it doesn't function correctly with dynamic paper-radio-buttons
+function clearLastSceneSelection(event) {
+   if (selectedScene === undefined) {
+      selectedScene = document.querySelector('#scenes paper-radio-button[name="1"]');
+   }
+
+   if (selectedScene.name !== event.target.closest('paper-radio-button').name) {
+      selectedScene.removeAttribute('checked');
+      selectedScene = event.target.closest('paper-radio-button');
+   } else {
+      selectedScene.setAttribute('checked', '');
+   }
+}
+
+function getPickerData() {
+   var tab = document.querySelector('paper-tabs#color-picker-tabs').selected;
+
+   if (tab == 0) {
+      var mode = 'rgb'
       var color = {
          r: rInput.value,
          g: gInput.value,
          b: bInput.value
       };
-   } else if (mode == 'hsv') {
+   } else if (tab == 1) {
+      var mode = 'hsv'
       var color = {
          h: hInput.value,
          s: sInput.value,
          v: vInput.value
       };
-   } else if (mode == 'xy') {
+   } else if (tab == 2) {
+      var mode = 'xy'
       var color = {
          x: xInput.value,
          y: yInput.value
       };
-   } else if (mode == 'ct') {
+   } else if (tab == 3) {
+      var mode = 'ct'
       var color = {
          ct: ctInput.value
       };
+   } else if (tab == 4) {
+      var mode = 'scene'
+      var color = {
+         scene: Object.keys(scenes)[selectedScene.name]
+      }
    }
 
-   setColor({'mode': mode, color: color});
+   return {'mode': mode, color: color};
 }
 
 function updatePreviewColor(event, mode) {
