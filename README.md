@@ -9,7 +9,6 @@ browserify dashboard/panel.js -o panel-browserified.js
 
 ## Todo
 ### Short Term
-- add brightness sliders for xy and ct color picker
 - add warning when updating lights when no lights have been selected
 - live update of color-preview for ct color picker
 - implement a search for new lights feature

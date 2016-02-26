@@ -30,7 +30,7 @@ paper-tabs {
 }
 
 #scrollable {
-   max-height: 130px;
+   max-height: 152px;
    padding: 0;
 }
 
@@ -40,6 +40,10 @@ paper-tabs {
 }
 
 #master-send {
+}
+
+#scenes.scroll-container {
+   justify-content: flex-end;
 }
 
 .scroll-container {

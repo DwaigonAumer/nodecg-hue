@@ -65,7 +65,8 @@
             --paper-slider-active-color: #888888;
             --paper-slider-pin-color: #888888;
         }
-        paper-slider.val {
+        paper-slider.val,
+        paper-slider.bri {
             --paper-slider-knob-color: #000000;
             --paper-slider-knob-start-color: #000000;
             --paper-slider-knob-start-border-color: #000000;
@@ -157,12 +158,14 @@
             <div class="color-preview"></div>
         </div>
         <div class="slider-group xy">
-            <paper-slider class="x" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
-            <paper-slider class="y" min="0.0" max="1.0" value="0" step="0.001"editable pin></paper-slider>
+            <paper-slider class="x" min="0.13" max="0.7" value="0" step="0.001"editable pin></paper-slider>
+            <paper-slider class="y" min="0.03" max="0.7" value="0" step="0.001"editable pin></paper-slider>
+            <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
             <div class="color-preview"></div>
         </div>
         <div class="slider-group ct">
             <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
+            <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
             <div class="color-preview"></div>
         </div>
         <paper-dialog-scrollable id="scenes-scrollable">

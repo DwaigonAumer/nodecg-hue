@@ -7,8 +7,8 @@ var config, lights, groups, rules, scenes, schedules, sensors
 var colorPreview
 var rInput, gInput, bInput, rSlider, gSlider, bSlider;
 var hInput, sInput, vInput, hSlider, sSlider, vSlider;
-var xInput, yInput, xSlider, ySlider;
-var ctInput, ctSlider;
+var xInput, yInput, xybInput, xSlider, ySlider, xybSlider;
+var ctInput, ctbInput, ctSlider, ctbSlider;
 var selectedScene;
 
 if (host.length && username.length) {
@@ -41,11 +41,15 @@ document.addEventListener('WebComponentsReady', function() {
 
    xInput = document.querySelector('.x input#input');
    yInput = document.querySelector('.y input#input');
+   xybInput = document.querySelector('.xy .bri input#input');
    xSlider = document.querySelector('.x #sliderContainer');
    ySlider = document.querySelector('.y #sliderContainer');
+   xybSlider = document.querySelector('.xy .bri #sliderContainer');
 
    ctInput = document.querySelector('.ct input#input');
+   ctbInput = document.querySelector('.ct .bri input#input');
    ctSlider = document.querySelector('.ct #sliderContainer');
+   ctbSlider = document.querySelector('.ct .bri #sliderContainer');
 
    // listeners for tab selections
    var lightSelectTabs = document.querySelectorAll('.light-select-tab');
@@ -73,8 +77,10 @@ document.addEventListener('WebComponentsReady', function() {
 
    xInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
    yInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
+   xybInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
 
    ctInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'ct'); });
+   ctbInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'ct'); });
 
    // listener that will send lightState to selected lights
    document.querySelector('#master-send').addEventListener('click', sendLightState);
@@ -98,9 +104,9 @@ function sendLightState(event) {
       } else if (picker.mode == "hsv") {
          var ls = hue.lightState.create().on().transitiontime(transitionTime).hsb(picker.color.h, picker.color.s, picker.color.v);
       } else if (picker.mode == "xy") {
-         var ls = hue.lightState.create().on().transitiontime(transitionTime).xy(picker.color.x, picker.color.y);
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).xy(picker.color.x, picker.color.y).bri(picker.color.b);
       } else if (picker.mode == "ct") {
-         var ls = hue.lightState.create().on().transitiontime(transitionTime).ct(picker.color.ct);
+         var ls = hue.lightState.create().on().transitiontime(transitionTime).ct(picker.color.ct).bri(picker.color.b);
       } else if (picker.mode == "scene") {
          var ls = {'on': true, 'transitiontime': transitionTime, 'scene': picker.color.scene};
       }
@@ -278,12 +284,14 @@ function getPickerData() {
       var mode = 'xy'
       var color = {
          x: xInput.value,
-         y: yInput.value
+         y: yInput.value,
+         b: parseInt((xybInput.value / 100) * 255, 10)
       };
    } else if (tab == 3) {
       var mode = 'ct'
       var color = {
-         ct: ctInput.value
+         ct: ctInput.value,
+         b: parseInt((ctbInput.value / 100) * 255, 10)
       };
    } else if (tab == 4) {
       var mode = 'scene'
@@ -308,7 +316,7 @@ function updatePreviewColor(event, mode) {
       var hsl = hsv2hsl(hSlider.parentElement.immediateValue, (sSlider.parentElement.immediateValue / 100.0), (vSlider.parentElement.immediateValue / 100.0))
       color = "hsl(" + hsl.h + ", " + hsl.s * 100 + "%, " + hsl.l * 100 + "%)";
    } else if (slider.closest('.slider-group').className.indexOf('xy') >= 0) {
-      var rgb = xy2rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue);
+      var rgb = xy2rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue, xybSlider.parentElement.immediateValue);
       color = "rgb(" + parseInt((rgb.r * 255), 10) + ", " + parseInt((rgb.g * 255), 10) + ", " + parseInt((rgb.b * 255), 10) + ")";
    }
    for (var i = colorPreview.length - 1; i >= 0; i--) {
@@ -370,9 +378,9 @@ function hsv2hsl(h, s, v) {
    return {h: h, s: s1, l: l1};
 }
 
-function xy2rgb(x, y) {
+function xy2rgb(x, y, b) {
    var z = 1.0 - x - y;
-   var Y = 1.0;
+   var Y = b / 100;
    var X = (Y / y) * x;
    var Z = (Y / y) * z;
 
