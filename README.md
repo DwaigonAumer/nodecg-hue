@@ -21,6 +21,8 @@ browserify dashboard/panel.js -o panel-browserified.js
 - create a settings element on the panel that contains frequently changed lightstate options (color effect)
 
 ### Long Term
+- consider moving todo list off of GitHub
+- make smarter requests to hue-api by removing unnecessary arguments (don't send on() to a light that is already on)
 - create a visual color picker with the ability to save favourite colors
 - consider moving scenes to a separate panel
 - add ability to select from a couple different layout designs
