@@ -29,12 +29,14 @@
         }
         paper-slider {
             width: 100%;
+            --paper-slider-height: 4px;
         }
         paper-slider.red {
             --paper-slider-knob-color: #FF0C5E;
             --paper-slider-knob-start-color: #FF0C5E;
             --paper-slider-knob-start-border-color: #FF0C5E;
             --paper-slider-active-color: #FF0C5E;
+            --paper-slider-pin-start-color: #FF0C5E;
             --paper-slider-pin-color: #FF0C5E;
         }
         paper-slider.green {
@@ -42,6 +44,7 @@
             --paper-slider-knob-start-color: #0CEA8A;
             --paper-slider-knob-start-border-color: #0CEA8A;
             --paper-slider-active-color: #0CEA8A;
+            --paper-slider-pin-start-color: #0CEA8A;
             --paper-slider-pin-color: #0CEA8A;
         }
         paper-slider.blue {
@@ -49,20 +52,23 @@
             --paper-slider-knob-start-color: #1AA5FF;
             --paper-slider-knob-start-border-color: #1AA5FF;
             --paper-slider-active-color: #1AA5FF;
+            --paper-slider-pin-start-color: #1AA5FF;
             --paper-slider-pin-color: #1AA5FF;
         }
         paper-slider.hue {
-            --paper-slider-knob-color: #FF0000;
-            --paper-slider-knob-start-color: #FF0000;
-            --paper-slider-knob-start-border-color: #FF0000;
+            --paper-slider-knob-color: #F66;
+            --paper-slider-knob-start-color: #F66;
+            --paper-slider-knob-start-border-color: #F66;
             --paper-slider-active-color: #FF0000;
-            --paper-slider-pin-color: #888888;
+            --paper-slider-pin-start-color: #444444;
+            --paper-slider-pin-color: #444444;
         }
         paper-slider.sat {
             --paper-slider-knob-color: #888888;
             --paper-slider-knob-start-color: #888888;
             --paper-slider-knob-start-border-color: #888888;
             --paper-slider-active-color: #888888;
+            --paper-slider-pin-start-color: #888888;
             --paper-slider-pin-color: #888888;
         }
         paper-slider.val,
@@ -71,6 +77,7 @@
             --paper-slider-knob-start-color: #000000;
             --paper-slider-knob-start-border-color: #000000;
             --paper-slider-active-color: #000000;
+            --paper-slider-pin-start-color: #000000;
             --paper-slider-pin-color: #000000;
         }
         paper-slider.x {
@@ -78,6 +85,7 @@
             --paper-slider-knob-start-color: #888888;
             --paper-slider-knob-start-border-color: #888888;
             --paper-slider-active-color: #888888;
+            --paper-slider-pin-start-color: #888888;
             --paper-slider-pin-color: #888888;
         }
         paper-slider.y {
@@ -85,19 +93,21 @@
             --paper-slider-knob-start-color: #888888;
             --paper-slider-knob-start-border-color: #888888;
             --paper-slider-active-color: #888888;
+            --paper-slider-pin-start-color: #888888;
             --paper-slider-pin-color: #888888;
         }
         paper-slider.ct {
-            --paper-slider-knob-color: rgb(92, 173, 255);
-            --paper-slider-knob-start-color: rgb(92, 173, 255);
-            --paper-slider-knob-start-border-color: rgb(92, 173, 255);
-            --paper-slider-active-color: rgb(92, 173, 255);
-            --paper-slider-pin-color: rgb(92, 173, 255);
+            --paper-slider-knob-color: #E57B47;
+            --paper-slider-knob-start-color: #D6D7E5;
+            --paper-slider-knob-start-border-color: #D6D7E5;
+            --paper-slider-active-color: rgb(255, 136, 79);
+            --paper-slider-pin-start-color: #444444;
+            --paper-slider-pin-color: #444444;
         }
         paper-radio-button {
             --paper-radio-button-unchecked-color: #E1E1E1;
             --paper-radio-button-checked-color: #FF0C5D;
-            --paper-radio-button-label-color: #444;
+            --paper-radio-button-label-color: #444444;
         }
     </style>
 </head>
@@ -139,33 +149,66 @@
 
     <paper-tabs id="color-picker-tabs" selected="0">
         <paper-tab class="color-picker-tab">RGB</paper-tab>
-        <paper-tab class="color-picker-tab">HSV</paper-tab>
+        <paper-tab class="color-picker-tab">HSB</paper-tab>
         <paper-tab class="color-picker-tab">XY</paper-tab>
         <paper-tab class="color-picker-tab">CT</paper-tab>
         <paper-tab class="color-picker-tab">Scenes</paper-tab>
     </paper-tabs>
     <iron-pages id="color-picker-pages" selected="0">
         <div class="slider-group rgb">
-            <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
-            <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
-            <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+            <div class="slider-container">
+                <div class="slider-title">Red</div>
+                <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Green</div>
+                <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Blue</div>
+                <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+            </div>
             <div class="color-preview"></div>
         </div>
         <div class="slider-group hue">
-            <paper-slider class="hue" min="0" max="359" value="0" editable pin></paper-slider>
-            <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
-            <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
+            <div class="slider-container">
+                <div class="slider-title">Hue</div>
+                <paper-slider class="hue" min="0" max="359" value="359" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Saturation</div>
+                <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Brightness</div>
+                <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
+            </div>
             <div class="color-preview"></div>
         </div>
         <div class="slider-group xy">
-            <paper-slider class="x" min="0.13" max="0.7" value="0" step="0.001"editable pin></paper-slider>
-            <paper-slider class="y" min="0.03" max="0.7" value="0" step="0.001"editable pin></paper-slider>
-            <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+            <div class="slider-container">
+                <div class="slider-title">X</div>
+                <paper-slider class="x" min="0.13" max="0.7" value="0" step="0.001" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Y</div>
+                <paper-slider class="y" min="0.03" max="0.7" value="0" step="0.001" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Brightness</div>
+                <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+            </div>
             <div class="color-preview"></div>
         </div>
         <div class="slider-group ct">
-            <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
-            <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+            <div class="slider-container">
+                <div class="slider-title">Mired</div>
+                <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
+            </div>
+            <div class="slider-container">
+                <div class="slider-title">Brightness</div>
+                <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+            </div>
             <div class="color-preview"></div>
         </div>
         <paper-dialog-scrollable id="scenes-scrollable">
