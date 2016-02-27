@@ -306,18 +306,30 @@ function getPickerData() {
 function updatePreviewColor(event, mode) {
    var color;
    var slider = event.target.closest('paper-slider');
+   var sliderClass = slider.closest('.slider-group').className;
 
-   if (slider.closest('.slider-group').className.indexOf('rgb') >= 0) {
+   if (sliderClass.indexOf('rgb') >= 0) {
       color = "rgb(" + rSlider.parentElement.immediateValue + ", " + gSlider.parentElement.immediateValue + ", " + bSlider.parentElement.immediateValue + ")";
-   } else if (slider.closest('.slider-group').className.indexOf('hue') >= 0) {
-      hSlider.querySelector('#sliderKnobInner').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 50%)";
-      hSlider.querySelector('#sliderKnobInner').style.borderColor = "hsl(" + hInput.value + ", 100%, 50%)";
+   } else if (sliderClass.indexOf('hue') >= 0) {
+      hSlider.querySelector('#sliderKnobInner').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 70%)";
+      hSlider.querySelector('#sliderKnobInner').style.borderColor = "hsl(" + hInput.value + ", 100%, 70%)";
       hSlider.querySelector('#primaryProgress').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
-      var hsl = hsv2hsl(hSlider.parentElement.immediateValue, (sSlider.parentElement.immediateValue / 100.0), (vSlider.parentElement.immediateValue / 100.0))
+      hSlider.querySelector('#progressContainer').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
+      var hsl = hsv2Hsl(hSlider.parentElement.immediateValue, (sSlider.parentElement.immediateValue / 100.0), (vSlider.parentElement.immediateValue / 100.0))
       color = "hsl(" + hsl.h + ", " + hsl.s * 100 + "%, " + hsl.l * 100 + "%)";
-   } else if (slider.closest('.slider-group').className.indexOf('xy') >= 0) {
-      var rgb = xy2rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue, xybSlider.parentElement.immediateValue);
+   } else if (sliderClass.indexOf('xy') >= 0) {
+      var rgb = xy2Rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue, xybSlider.parentElement.immediateValue);
       color = "rgb(" + parseInt((rgb.r * 255), 10) + ", " + parseInt((rgb.g * 255), 10) + ", " + parseInt((rgb.b * 255), 10) + ")";
+   } else if (sliderClass.indexOf('ct') >= 0) {
+      var rgbSlider = kelvin2Rgb(mired2Kelvin(ctSlider.parentElement.immediateValue), 100);
+      colorSliderBright = "rgb(" + parseInt(rgbSlider.r, 10) + ", " + parseInt(rgbSlider.g, 10) + ", " + parseInt(rgbSlider.b, 10) + ")";
+      colorSliderDim = "rgb(" + parseInt(rgbSlider.r, 10) - 25 + ", " + parseInt(rgbSlider.g, 10) - 25 + ", " + parseInt(rgbSlider.b, 10) - 25 + ")";
+      var rgb = kelvin2Rgb(mired2Kelvin(ctSlider.parentElement.immediateValue), ctbSlider.parentElement.immediateValue);
+      color = "rgb(" + parseInt(rgb.r, 10) + ", " + parseInt(rgb.g, 10) + ", " + parseInt(rgb.b, 10) + ")";
+      ctSlider.querySelector('#sliderKnobInner').style.backgroundColor = colorSliderBright;
+      ctSlider.querySelector('#sliderKnobInner').style.borderColor = colorSliderBright;
+      ctSlider.querySelector('#primaryProgress').style.backgroundColor = colorSliderDim;
+      ctSlider.querySelector('#progressContainer').style.backgroundColor = colorSliderDim;
    }
    for (var i = colorPreview.length - 1; i >= 0; i--) {
       colorPreview[i].style.backgroundColor = color;
@@ -365,7 +377,7 @@ function rgbToHsv(r, g, b) {
    return {'h': Math.round(h), 's': Math.round(s), 'v': Math.round(v)}
 }
 
-function hsv2hsl(h, s, v) {
+function hsv2Hsl(h, s, v) {
    l1 = (2 - s) * v;
    s1 = s * v;
    if (s1 == 2) {
@@ -378,7 +390,7 @@ function hsv2hsl(h, s, v) {
    return {h: h, s: s1, l: l1};
 }
 
-function xy2rgb(x, y, b) {
+function xy2Rgb(x, y, b) {
    var z = 1.0 - x - y;
    var Y = b / 100;
    var X = (Y / y) * x;
@@ -393,4 +405,50 @@ function xy2rgb(x, y, b) {
    b = b <= 0.0031308 ? 12.92 * b : (1.055) * Math.pow(b, (1.0 / 2.4)) - 0.055;
 
    return {r: r, g: g, b: b};
+}
+
+function mired2Kelvin(mired) {
+   return (Math.pow(10, 6) / mired);
+}
+
+// http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+function kelvin2Rgb(kelvin, bri) {
+   var r, g, b;
+   const K = parseInt(kelvin, 10) / 100;
+
+   // red
+   if (K <= 60) {
+      r = 255;
+   } else {
+      r = K - 54;
+      r = 329.698727446 * Math.pow(r, -0.1332047592);
+      if (r > 255) { r = 255; }
+      else if (r < 0) { r = 0; }
+   }
+
+   // green
+   if (K <= 60) {
+      g = K;
+      g = 99.4708025861 * Math.log(g) - 161.1195681661;
+   } else {
+      g = K - 54;
+      g = 288.1221695283 * Math.pow(g, -0.0755148492);
+   }
+
+   if (g > 255) { g = 255; }
+   else if (g < 0) { g = 0; }
+
+   // blue
+   if (K >= 60) {
+      b = 255;
+   } else if (K <= 19) {
+      b = 0;
+   } else {
+      b = K - 4
+      b = 138.5177312231 * Math.log(b) - 305.0447927307;
+      if (b > 255) { b = 255; }
+      else if (b < 0) { b = 0; }
+   }
+
+   return {r: (r * (bri/100)), g: (g * (bri/100)), b: (b * (bri/100))};
 }
