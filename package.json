@@ -20,7 +20,7 @@
     "dashboardPanels": [
       {
         "name": "hue-panel",
-        "title": "Philips Hue",
+        "title": "Hue",
         "width": 3,
         "headerColor": "#FF0C5D",
         "file": "panel.html",

@@ -1,3 +1,22 @@
+#inactive {
+   height: 560px;
+}
+
+#inactive p {
+   text-align: center;
+}
+
+#inactive paper-button {
+   width: 100%;
+}
+
+#smile-search {
+   transform: rotate(-30deg);
+   position: absolute;
+   left: 19%;
+   top: 34%;
+}
+
 paper-button#master-send {
    margin: 8px 0px;
 }

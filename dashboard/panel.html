@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width" initial-scale="1">
     <title>Philips Hue Panel</title>
     <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <script src="./panel-browserified.js"></script>
+    <script src="node-hue-api-browserified.js"></script>
+    <script src="panel.js"></script>
     <link rel="import" href="components/iron-pages/iron-pages.html">
     <link rel="import" href="components/paper-button/paper-button.html">
     <link rel="import" href="components/paper-slider/paper-slider.html">
@@ -14,8 +15,12 @@
     <link rel="import" href="components/paper-dialog-scrollable/paper-dialog-scrollable.html">
     <link rel="import" href="components/paper-radio-group/paper-radio-group.html">
     <link rel="import" href="components/paper-radio-button/paper-radio-button.html">
-    <link href="./panel.css" rel="stylesheet">
+    <link href="panel.css" rel="stylesheet">
     <style is="custom-style">
+        paper-button.green {
+            background: #0CEA8A;
+            color: #FFFFFF;
+        }
         paper-toggle-button.green {
             --paper-toggle-button-checked-bar-color:  #0CEA8A;
             --paper-toggle-button-checked-button-color:  #0CEA8A;
@@ -112,126 +117,110 @@
     </style>
 </head>
 <body>
+    <iron-pages id="main-pages" attr-for-selected="id">
+        <div id="inactive">
+            <p>To connect this app to your Philips Hue bridge, press the link button on the bridge and then press the 'CONNECT TO BRIDGE' button within 30 seconds</p>
+            <paper-button id="connect" class="green">Connect To Bridge</paper-button>
+            <svg id="smile-search" viewBox="0 0 64 64" enable-background="new 0 0 64 64"><circle fill="#ececec" cx="32" cy="32" r="30"></circle><path fill="#bbb" d="m51 35.32c0 8.05-6.311 17.447-19 17.447-12.693 0-19-9.395-19-17.447 0 0 6.307 0 19 0 12.689 0 19 0 19 0"></path><path fill="#999" d="m34.1 40.803c-.662-.016-1.676.576-1.305 2.143.188.791 1.355 1.748 1.355 3.02 0 2.596-4.303 2.596-4.303 0 0-1.275 1.168-2.232 1.355-3.02.373-1.566-.645-2.158-1.303-2.143-1.791.045-4.729 1.9-4.729 5.04 0 3.529 3.057 6.389 6.828 6.389 3.77 0 6.826-2.859 6.826-6.389.002-3.139-2.937-4.994-4.724-5.04"></path><path fill="#ececec" d="m41.1 51.02c-2.408-1.408-5.432-2.299-9.105-2.299s-6.697.891-9.104 2.299c2.406 1.41 5.43 2.299 9.104 2.299s6.697-.889 9.105-2.299"></path><path fill="#fff" d="m13 35h38v5h-38z"></path><path fill="#888" d="m32 53.764c-12.99 0-20-9.504-20-18.447v-1h40v1c0 8.943-7.01 18.447-20 18.447m-17.967-17.448c.504 7.666 6.764 15.448 17.967 15.448s17.465-7.781 17.969-15.447h-35.936z"></path><path fill="#fff" d="m28.5 22c0 4.418-3.584 8-8 8-4.418 0-8-3.582-8-8 0-4.416 3.582-8 8-8 4.416 0 8 3.584 8 8"></path><circle id="eye-left" fill="#888" cx="20.5" cy="22" r="4"></circle><path fill="#fff" d="m51.5 22c0 4.418-3.584 8-8 8-4.418 0-8-3.582-8-8 0-4.416 3.582-8 8-8 4.416 0 8 3.584 8 8"></path><circle id="eye-right" fill="#888" cx="43.5" cy="22" r="4"></circle></svg>
+        </div>
+        <div id="active">
+            <paper-tabs id="light-select-tabs" selected="0">
+                <paper-tab class="light-select-tab">Individual Lights</paper-tab>
+                <paper-tab class="light-select-tab">Group of Lights</paper-tab>
+            </paper-tabs>
+            <iron-pages id="light-select-pages" selected="0">
+                <paper-dialog-scrollable>
+                    <div id="single-light" class="scroll-container">
+                        <!-- populated dynamically by response to node-hue-api getLights() -->
+                    </div>
+                </paper-dialog-scrollable>
+                <paper-dialog-scrollable>
+                    <div id="group-light" class="scroll-container">
+                        <!-- populated dynamically by response to node-hue-api getGroups() -->
+                    </div>
+                </paper-dialog-scrollable>
+            </iron-pages>
 
-    <paper-tabs id="light-select-tabs" selected="0">
-        <paper-tab class="light-select-tab">Individual Lights</paper-tab>
-        <paper-tab class="light-select-tab">Group of Lights</paper-tab>
-    </paper-tabs>
-    <iron-pages id="light-select-pages" selected="0">
-        <paper-dialog-scrollable>
-            <div id="single-light" class="scroll-container">
-                <paper-button class="btn-selector btn-thin" raised>Select All</paper-button>
-                <paper-button class="btn-selector btn-thin" raised>Select None</paper-button>
-                <paper-button toggles raised>1</paper-button>
-                <paper-button toggles raised>2</paper-button>
-                <paper-button toggles raised>3</paper-button>
-                <paper-button toggles raised>4</paper-button>
-                <paper-button toggles raised>5</paper-button>
-                <paper-button toggles raised>6</paper-button>
-                <paper-button toggles raised>7</paper-button>
-                <paper-button toggles raised>8</paper-button>
-                <paper-button toggles raised>9</paper-button>
-                <paper-button toggles raised>10</paper-button>
-                <paper-button toggles raised>11</paper-button>
-                <paper-button toggles raised>12</paper-button>
+            <paper-tabs id="color-picker-tabs" selected="0">
+                <paper-tab class="color-picker-tab">HSB</paper-tab>
+                <paper-tab class="color-picker-tab">RGB</paper-tab>
+                <paper-tab class="color-picker-tab">XY</paper-tab>
+                <paper-tab class="color-picker-tab">CT</paper-tab>
+                <paper-tab class="color-picker-tab">Scenes</paper-tab>
+            </paper-tabs>
+            <iron-pages id="color-picker-pages" selected="0">
+                <div class="slider-group hue">
+                    <div class="slider-container">
+                        <div class="slider-title">Hue</div>
+                        <paper-slider class="hue" min="0" max="359" value="359" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Saturation</div>
+                        <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Brightness</div>
+                        <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
+                    </div>
+                    <div class="color-preview"></div>
+                </div>
+                <div class="slider-group rgb">
+                    <div class="slider-container">
+                        <div class="slider-title">Red</div>
+                        <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Green</div>
+                        <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Blue</div>
+                        <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
+                    </div>
+                    <div class="color-preview"></div>
+                </div>
+                <div class="slider-group xy">
+                    <div class="slider-container">
+                        <div class="slider-title">X</div>
+                        <paper-slider class="x" min="0.13" max="0.7" value="0" step="0.001" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Y</div>
+                        <paper-slider class="y" min="0.03" max="0.7" value="0" step="0.001" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Brightness</div>
+                        <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+                    </div>
+                    <div class="color-preview"></div>
+                </div>
+                <div class="slider-group ct">
+                    <div class="slider-container">
+                        <div class="slider-title">Mired</div>
+                        <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
+                    </div>
+                    <div class="slider-container">
+                        <div class="slider-title">Brightness</div>
+                        <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
+                    </div>
+                    <div class="color-preview"></div>
+                </div>
+                <paper-dialog-scrollable id="scenes-scrollable">
+                    <div id="scenes" class="scroll-container">
+                        <!-- populated dynamically by response to node-hue-api getScenes() -->
+                    </div>
+                </paper-dialog-scrollable>
+            </iron-pages>
+
+
+            <hr></hr>
+
+            <div id="master-send-container">
+                <paper-toggle-button class="green" checked>Off/On</paper-toggle-button>
+                <paper-input class="input-transition-time" type="number" label="Transition Time (ms)" placeholder="400" min="0" max="600000"></paper-input>
+                <paper-button id="master-send" class="nodecg-success" raised>Take</paper-button>
             </div>
-        </paper-dialog-scrollable>
-        <paper-dialog-scrollable>
-            <div id="group-light" class="scroll-container">
-                <paper-button class="btn-thin" toggles raised>Potlights</paper-button>
-                <paper-button class="btn-thin" toggles raised>Stream Lights</paper-button>
-                <paper-button class="btn-thin" toggles raised>Spotlights</paper-button>
-                <paper-button class="btn-thin" toggles raised>Floor Lights</paper-button>
-                <paper-button class="btn-thin" toggles raised>Lightstrips</paper-button>
-            </div>
-        </paper-dialog-scrollable>
+        </div>
     </iron-pages>
-
-    <paper-tabs id="color-picker-tabs" selected="0">
-        <paper-tab class="color-picker-tab">RGB</paper-tab>
-        <paper-tab class="color-picker-tab">HSB</paper-tab>
-        <paper-tab class="color-picker-tab">XY</paper-tab>
-        <paper-tab class="color-picker-tab">CT</paper-tab>
-        <paper-tab class="color-picker-tab">Scenes</paper-tab>
-    </paper-tabs>
-    <iron-pages id="color-picker-pages" selected="0">
-        <div class="slider-group rgb">
-            <div class="slider-container">
-                <div class="slider-title">Red</div>
-                <paper-slider class="red" min="0" max="255" value="0" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Green</div>
-                <paper-slider class="green" min="0" max="255" value="0" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Blue</div>
-                <paper-slider class="blue" min="0" max="255" value="0" editable pin></paper-slider>
-            </div>
-            <div class="color-preview"></div>
-        </div>
-        <div class="slider-group hue">
-            <div class="slider-container">
-                <div class="slider-title">Hue</div>
-                <paper-slider class="hue" min="0" max="359" value="359" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Saturation</div>
-                <paper-slider class="sat" min="0" max="100" value="100" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Brightness</div>
-                <paper-slider class="val" min="0" max="100" value="100" editable pin></paper-slider>
-            </div>
-            <div class="color-preview"></div>
-        </div>
-        <div class="slider-group xy">
-            <div class="slider-container">
-                <div class="slider-title">X</div>
-                <paper-slider class="x" min="0.13" max="0.7" value="0" step="0.001" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Y</div>
-                <paper-slider class="y" min="0.03" max="0.7" value="0" step="0.001" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Brightness</div>
-                <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
-            </div>
-            <div class="color-preview"></div>
-        </div>
-        <div class="slider-group ct">
-            <div class="slider-container">
-                <div class="slider-title">Mired</div>
-                <paper-slider class="ct" min="153" max="500" value="500" editable pin></paper-slider>
-            </div>
-            <div class="slider-container">
-                <div class="slider-title">Brightness</div>
-                <paper-slider class="bri" min="0" max="100" value="100" editable pin></paper-slider>
-            </div>
-            <div class="color-preview"></div>
-        </div>
-        <paper-dialog-scrollable id="scenes-scrollable">
-            <div id="scenes" class="scroll-container" selected="1">
-                <paper-radio-button name="1">Movies</paper-radio-button>
-                <paper-radio-button name="2">Romance</paper-radio-button>
-                <paper-radio-button name="3">Video Games</paper-radio-button>
-                <paper-radio-button name="4">Studying</paper-radio-button>
-                <paper-radio-button name="5">Dinner</paper-radio-button>
-                <paper-radio-button name="6">Hide & Seek</paper-radio-button>
-                <paper-radio-button name="7">Dancing</paper-radio-button>
-                <paper-radio-button name="8">Streaming</paper-radio-button>
-            </div>
-        </paper-dialog-scrollable>
-    </iron-pages>
-
-
-    <hr></hr>
-
-    <div id="master-send-container">
-        <paper-toggle-button class="green" checked>Off/On</paper-toggle-button>
-        <paper-input class="input-transition-time" type="number" label="Transition Time (ms)" placeholder="400" min="0" max="600000"></paper-input>
-        <paper-button id="master-send" class="nodecg-success" raised>Take</paper-button>
-    </div>
 </body>
 </html>

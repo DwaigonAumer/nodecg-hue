@@ -4,7 +4,7 @@
 ## Extra Usage Steps
 Change directories to ```bundles/nodecg-hue``` and run the following command
 ```
-browserify dashboard/panel.js -o panel-browserified.js
+browserify dashboard/node-hue-api.js -o node-hue-api-browserified.js
 ```
 
 ## Todo
@@ -13,8 +13,7 @@ browserify dashboard/panel.js -o panel-browserified.js
 - ability to shift bri, hue, sat
 - stop sliders with large input values from being visually cut off
 - update color-preview on color-picker tab change
-- make finding and connecting to hue bridge robust
-- add message to background of light selection div while waiting to find lights/groups
+- add message to background of light selection div if lights/groups are empty
 - implement a search for new lights feature
 - implement light scheduling - [schedules API](http://www.developers.meethue.com/documentation/schedules-api-0)
 - create a settings dialog that contains rarely changed lightstate options (bridge name, proxy port, touchlink, netmask, gateway)

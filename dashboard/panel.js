@@ -1,26 +1,31 @@
-// hue
-var hue = require('node-hue-api');
-var host = nodecg.bundleConfig.host;
-var username = nodecg.bundleConfig.username;
 var config, lights, groups, rules, scenes, schedules, sensors
+var host = localStorage.getItem('nodecg-hue.hueHost');
+var username = localStorage.getItem('nodecg-hue.hueUsername');
 // dashboard
 var colorPreview
 var rInput, gInput, bInput, rSlider, gSlider, bSlider;
 var hInput, sInput, vInput, hSlider, sSlider, vSlider;
 var xInput, yInput, xybInput, xSlider, ySlider, xybSlider;
 var ctInput, ctbInput, ctSlider, ctbSlider;
-var selectedScene;
-
-if (host.length && username.length) {
-   setupHueApi();
-}
-else {
-   hue.nupnpSearch().then(setupHueApi).done();
-}
+var ironPages, selectedScene;
+var connectBtn;
 
 document.addEventListener('WebComponentsReady', function() {
-   // update ui with latest information
-   refreshHueData();
+   ironPages = document.querySelector('#main-pages');
+   connectBtn = document.querySelector('paper-button#connect');
+
+   connectBtn.addEventListener('click', function() {
+      Polymer.dom(connectBtn).textContent = "Connecting...";
+      hue.nupnpSearch().then(setupHueApi).done();
+   });
+
+   // create hueApi from localStorage data, otherwise search bridge and grab data
+   if(host != undefined && username != undefined) {
+      ironPages.select("active");
+      setupHueApi();
+   } else {
+      ironPages.select("inactive");
+   }
 
    // global elements
    colorPreview = document.querySelectorAll('.color-preview');
@@ -143,26 +148,85 @@ function logResult(result) {
    nodecg.log.debug(JSON.stringify(result, null, 2));
 }
 
-function setupHueApi() {
-   window.hueApi = new hue.HueApi(host, username);
+function setupHueApi(bridge) {
+   if (bridge) {
+      localStorage.setItem('nodecg-hue.hueHost', bridge[0].ipaddress)
+      host = bridge[0].ipaddress;
+      window.hueApi = new hue.HueApi(host);
+      hueApi.registerUser(host, 'github.com/bfaircloo/nodecg-hue', function(err, uname){
+         if (err != undefined) { 
+            nodecg.log.error(err);
+            Polymer.dom(connectBtn).textContent = "Connect To Bridge";
+            return;
+         }
+         localStorage.setItem('nodecg-hue.hueUsername', uname);
+         username = uname;
+         hueApi._config.username = uname;
+         refreshHueData(true, function() {
+            Polymer.dom(connectBtn).textContent = "Connect To Bridge";
+            ironPages.select("active");
+         });
+      });
+   } else {
+      window.hueApi = new hue.HueApi(host, username);
+      refreshHueData();
+   }
 }
 
-function refreshHueData() {
-   hueApi.fullState(function(err, data) {
-      if (err) throw err;
+function refreshHueData(forceApiCall, cb) {
+   if(forceApiCall || localStorage.getItem('nodecg-hue.hueConfig') === null) {
+      hueApi.fullState(function(err, data) {
+         if (err) throw err;
 
-      config = data.config;
-      lights = data.lights;
-      groups = data.groups;
-      rules = data.rules;
-      scenes = data.scenes;
-      schedules = data.schedules;
-      sensors = data.sensors;
-      
+         localStorage.setItem('nodecg-hue.hueConfig', JSON.stringify(data.config));
+         localStorage.setItem('nodecg-hue.hueLights', JSON.stringify(data.lights));
+         localStorage.setItem('nodecg-hue.hueGroups', JSON.stringify(data.groups));
+         localStorage.setItem('nodecg-hue.hueRules', JSON.stringify(data.rules));
+         localStorage.setItem('nodecg-hue.hueScenes', JSON.stringify(data.scenes));
+         localStorage.setItem('nodecg-hue.hueSchedules', JSON.stringify(data.schedules));
+         localStorage.setItem('nodecg-hue.hueSensors', JSON.stringify(data.sensors));
+
+         config = data.config;
+         lights = data.lights;
+         groups = data.groups;
+         rules = data.rules;
+         scenes = data.scenes;
+         schedules = data.schedules;
+         sensors = data.sensors;
+
+         refreshLightsUi();
+         refreshGroupsUi();
+         refreshScenesUi();
+
+         if (cb != undefined) { cb(); };
+      });
+   } else {
+      config = JSON.parse(localStorage.getItem('nodecg-hue.hueConfig'));
+      lights = JSON.parse(localStorage.getItem('nodecg-hue.hueLights'));
+      groups = JSON.parse(localStorage.getItem('nodecg-hue.hueGroups'));
+      rules = JSON.parse(localStorage.getItem('nodecg-hue.hueRules'));
+      scenes = JSON.parse(localStorage.getItem('nodecg-hue.hueScenes'));
+      schedules = JSON.parse(localStorage.getItem('nodecg-hue.hueSchedules'));
+      sensors = JSON.parse(localStorage.getItem('nodecg-hue.hueSensors'));
+
       refreshLightsUi();
       refreshGroupsUi();
       refreshScenesUi();
-   })
+
+      if (cb != undefined) { cb(); };
+   }
+   
+}
+
+function deleteAppsWhitelistEntries() {
+   var wlKeys = Object.keys(config.whitelist);
+   for (var i = wlKeys.length - 1; i >= 0; i--) {
+      if (config.whitelist[wlKeys[i]].name == "github.com/bfaircloo/nodecg-hue") {
+         hueApi.deleteUser(wlKeys[i]);
+      }
+   }
+   localStorage.removeItem('nodecg-hue.hueUsername');
+   ironPages.select("inactive");
 }
 
 function refreshLightsUi() {
@@ -223,13 +287,16 @@ function refreshScenesUi() {
    }
 
    // add new scenes buttons
-   for (var i = 1; i < Object.keys(scenes).length; i++) {
+   for (var i = 0; i < Object.keys(scenes).length; i++) {
       var sceneId = Object.keys(scenes)[i];
       var scenesButton = document.createElement('paper-radio-button');
-      scenesButton.setAttribute('name', i);
-      if (i == 1) { scenesButton.setAttribute('checked', '') };
-      scenesButton.querySelector('#radioLabel').textContent = scenes[sceneId].name;
+      scenesButton.setAttribute('name', sceneId);
+      Polymer.dom(scenesButton).textContent = scenes[sceneId].name;
       scenesButton.addEventListener('click', clearLastSceneSelection);
+      if (i == 0) {
+         scenesButton.setAttribute('checked', '');
+         selectedScene = scenesButton;
+      };
       scenesRadioGroup.appendChild(scenesButton);
    }
 }
@@ -252,7 +319,7 @@ function selectNoLights(event) {
 // this doesn't use paper-radio-group becasue it doesn't function correctly with dynamic paper-radio-buttons
 function clearLastSceneSelection(event) {
    if (selectedScene === undefined) {
-      selectedScene = document.querySelector('#scenes paper-radio-button[name="1"]');
+      selectedScene = document.querySelector('#scenes paper-radio-button');
    }
 
    if (selectedScene.name !== event.target.closest('paper-radio-button').name) {
@@ -267,18 +334,18 @@ function getPickerData() {
    var tab = document.querySelector('paper-tabs#color-picker-tabs').selected;
 
    if (tab == 0) {
-      var mode = 'rgb'
-      var color = {
-         r: rInput.value,
-         g: gInput.value,
-         b: bInput.value
-      };
-   } else if (tab == 1) {
       var mode = 'hsv'
       var color = {
          h: hInput.value,
          s: sInput.value,
          v: vInput.value
+      };
+   } else if (tab == 1) {
+      var mode = 'rgb'
+      var color = {
+         r: rInput.value,
+         g: gInput.value,
+         b: bInput.value
       };
    } else if (tab == 2) {
       var mode = 'xy'
@@ -296,7 +363,7 @@ function getPickerData() {
    } else if (tab == 4) {
       var mode = 'scene'
       var color = {
-         scene: Object.keys(scenes)[selectedScene.name]
+         scene: selectedScene.name
       }
    }
 

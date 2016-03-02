@@ -7,4 +7,4 @@ node_modules
 bower_components
 
 # Browserified Files
-dashboard/panel-browserified.js
+*-browserified.js
