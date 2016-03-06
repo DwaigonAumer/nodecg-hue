@@ -22,9 +22,21 @@
         "name": "hue-panel",
         "title": "Hue",
         "width": 3,
-        "headerColor": "#FF0C5D",
-        "file": "panel.html",
-        "faIcon": "fa-lightbulb-o"
+        "headerColor": "#18618B",
+        "file": "panel.html"
+      },
+      {
+        "name": "edit-hue",
+        "title": "Edit Hue Settings",
+        "width": 6,
+        "file": "edit-hue.html",
+        "dialog": true,
+        "dialogButtons": [
+          {
+            "name": "done",
+            "type": "dismiss"
+          }
+        ]
       }
     ]
   }

@@ -10,7 +10,7 @@ browserify dashboard/node-hue-api.js -o node-hue-api-browserified.js
 ## Todo
 ### Short Term
 - add warning when updating lights when no lights have been selected
-- ability to shift bri, hue, sat
+- ability to shift bri, hue, sat by small increments
 - stop sliders with large input values from being visually cut off
 - update color-preview on color-picker tab change
 - add message to background of light selection div if lights/groups are empty
@@ -21,6 +21,7 @@ browserify dashboard/node-hue-api.js -o node-hue-api-browserified.js
 
 ### Long Term
 - consider moving todo list off of GitHub
+- consider removing XY tab since it's not intuitive and the color-preview isn't that accurate
 - make smarter requests to hue-api by removing unnecessary arguments (don't send on() to a light that is already on)
 - create a visual color picker with the ability to save favourite colors
 - consider moving scenes to a separate panel

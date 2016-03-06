@@ -253,7 +253,7 @@ function refreshLightsUi() {
       var lightButton = document.createElement('paper-button');
       lightButton.textContent = i;
       lightButton.setAttribute('toggles', '');
-      lightButton.setAttribute('raised', '');
+      lightButton.className = "btn-light-select";
       lightButtonContainer.appendChild(lightButton);
    }
 }
@@ -269,9 +269,8 @@ function refreshGroupsUi() {
    for (var i = 1; i < Object.keys(groups).length; i++) {
       var groupButton = document.createElement('paper-button');
       groupButton.textContent = groups[i].name;
-      groupButton.className = "btn-thin";
+      groupButton.className = "btn-thin btn-light-select";
       groupButton.setAttribute('toggles', '');
-      groupButton.setAttribute('raised', '');
       groupButtonContainer.appendChild(groupButton);
    }
 }

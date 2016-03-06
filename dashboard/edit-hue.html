@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge; charset=UTF-8">
+   <meta name="viewport" content="width=device-width" initial-scale="1">
+   <title>Philips Hue Panel</title>
+   <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+   <link rel="import" href="components/iron-pages/iron-pages.html">
+   <link rel="import" href="components/paper-tabs/paper-tabs.html">
+   <link href="panel.css" rel="stylesheet">
+   <style is="custom-style">
+      paper-tabs {
+          --paper-tabs-selection-bar: {
+              height: 4px;
+          }
+          --paper-tabs-selection-bar-color: #BAD7E8;
+      }
+   </style>
+</head>
+<body>
+   <paper-tabs class="hue-tabs">
+      <paper-tab>Overview</paper-tab>
+      <paper-tab>Lights</paper-tab>
+      <paper-tab>Scenes</paper-tab>
+      <paper-tab>Schedules</paper-tab>
+   </paper-tabs>
+   <iron-pages class="hue-pages" selected="0">
+      <div>Placeholder for the editing of the Hue bridge's config</div>
+      <div>BBBBBB</div>
+      <div>CCCCCC</div>
+      <div>DDDDDD</div>
+   </iron-pages>
+</body>
