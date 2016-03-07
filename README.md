@@ -12,7 +12,6 @@ browserify dashboard/node-hue-api.js -o node-hue-api-browserified.js
 - add warning when updating lights when no lights have been selected
 - ability to shift bri, hue, sat by small increments
 - stop sliders with large input values from being visually cut off
-- update color-preview on color-picker tab change
 - add message to background of light selection div if lights/groups are empty
 - implement a search for new lights feature
 - implement light scheduling - [schedules API](http://www.developers.meethue.com/documentation/schedules-api-0)

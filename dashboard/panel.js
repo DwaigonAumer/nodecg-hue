@@ -2,7 +2,7 @@ var config, lights, groups, rules, scenes, schedules, sensors
 var host = localStorage.getItem('nodecg-hue.hueHost');
 var username = localStorage.getItem('nodecg-hue.hueUsername');
 // dashboard
-var colorPreview
+var hsvColorPreview, rgbColorPreview, xyColorPreview, ctColorPreview;
 var rInput, gInput, bInput, rSlider, gSlider, bSlider;
 var hInput, sInput, vInput, hSlider, sSlider, vSlider;
 var xInput, yInput, xybInput, xSlider, ySlider, xybSlider;
@@ -28,7 +28,10 @@ document.addEventListener('WebComponentsReady', function() {
    }
 
    // global elements
-   colorPreview = document.querySelectorAll('.color-preview');
+   hsvColorPreview = document.querySelector('#hsv-color-preview');
+   rgbColorPreview = document.querySelector('#rgb-color-preview');
+   xyColorPreview = document.querySelector('#xy-color-preview');
+   ctColorPreview = document.querySelector('#ct-color-preview');
 
    rInput = document.querySelector('paper-slider.red input#input');
    gInput = document.querySelector('paper-slider.green input#input');
@@ -56,6 +59,12 @@ document.addEventListener('WebComponentsReady', function() {
    ctSlider = document.querySelector('.ct #sliderContainer');
    ctbSlider = document.querySelector('.ct .bri #sliderContainer');
 
+   // set initial color-preview state
+   updatePreviewColor('hsv');
+   updatePreviewColor('rgb');
+   updatePreviewColor('xy');
+   updatePreviewColor('ct');
+
    // listeners for tab selections
    var lightSelectTabs = document.querySelectorAll('.light-select-tab');
    for (var i = lightSelectTabs.length - 1; i >= 0; i--) {
@@ -72,20 +81,20 @@ document.addEventListener('WebComponentsReady', function() {
    }
 
    // listeners that will notify color-preview of immediate color changes
-   rInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'rgb'); });
-   gInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'rgb'); });
-   bInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'rgb'); });
+   rInput.addEventListener('bind-value-changed', function() { updatePreviewColor('rgb'); });
+   gInput.addEventListener('bind-value-changed', function() { updatePreviewColor('rgb'); });
+   bInput.addEventListener('bind-value-changed', function() { updatePreviewColor('rgb'); });
 
-   hInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'hsv'); });
-   sInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'hsv'); });
-   vInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'hsv'); });
+   hInput.addEventListener('bind-value-changed', function() { updatePreviewColor('hsv'); });
+   sInput.addEventListener('bind-value-changed', function() { updatePreviewColor('hsv'); });
+   vInput.addEventListener('bind-value-changed', function() { updatePreviewColor('hsv'); });
 
-   xInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
-   yInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
-   xybInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'xy'); });
+   xInput.addEventListener('bind-value-changed', function() { updatePreviewColor('xy'); });
+   yInput.addEventListener('bind-value-changed', function() { updatePreviewColor('xy'); });
+   xybInput.addEventListener('bind-value-changed', function() { updatePreviewColor('xy'); });
 
-   ctInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'ct'); });
-   ctbInput.addEventListener('bind-value-changed', function() { updatePreviewColor(event, 'ct'); });
+   ctInput.addEventListener('bind-value-changed', function() { updatePreviewColor('ct'); });
+   ctbInput.addEventListener('bind-value-changed', function() { updatePreviewColor('ct'); });
 
    // listener that will send lightState to selected lights
    document.querySelector('#master-send').addEventListener('click', sendLightState);
@@ -369,24 +378,25 @@ function getPickerData() {
    return {'mode': mode, color: color};
 }
 
-function updatePreviewColor(event, mode) {
+function updatePreviewColor(mode) {
    var color;
-   var slider = event.target.closest('paper-slider');
-   var sliderClass = slider.closest('.slider-group').className;
 
-   if (sliderClass.indexOf('rgb') >= 0) {
-      color = "rgb(" + rSlider.parentElement.immediateValue + ", " + gSlider.parentElement.immediateValue + ", " + bSlider.parentElement.immediateValue + ")";
-   } else if (sliderClass.indexOf('hue') >= 0) {
+   if (mode == 'hsv') {
       hSlider.querySelector('#sliderKnobInner').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 70%)";
       hSlider.querySelector('#sliderKnobInner').style.borderColor = "hsl(" + hInput.value + ", 100%, 70%)";
       hSlider.querySelector('#primaryProgress').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
       hSlider.querySelector('#progressContainer').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
       var hsl = hsv2Hsl(hSlider.parentElement.immediateValue, (sSlider.parentElement.immediateValue / 100.0), (vSlider.parentElement.immediateValue / 100.0))
       color = "hsl(" + hsl.h + ", " + hsl.s * 100 + "%, " + hsl.l * 100 + "%)";
-   } else if (sliderClass.indexOf('xy') >= 0) {
+      hsvColorPreview.style.backgroundColor = color;
+   } else if (mode == 'rgb') {
+      color = "rgb(" + rSlider.parentElement.immediateValue + ", " + gSlider.parentElement.immediateValue + ", " + bSlider.parentElement.immediateValue + ")";
+      rgbColorPreview.style.backgroundColor = color;
+   } else if (mode == 'xy') {
       var rgb = xy2Rgb(xSlider.parentElement.immediateValue, ySlider.parentElement.immediateValue, xybSlider.parentElement.immediateValue);
       color = "rgb(" + parseInt((rgb.r * 255), 10) + ", " + parseInt((rgb.g * 255), 10) + ", " + parseInt((rgb.b * 255), 10) + ")";
-   } else if (sliderClass.indexOf('ct') >= 0) {
+      xyColorPreview.style.backgroundColor = color;
+   } else if (mode == 'ct') {
       var rgbSlider = kelvin2Rgb(mired2Kelvin(ctSlider.parentElement.immediateValue), 100);
       colorSliderBright = "rgb(" + parseInt(rgbSlider.r, 10) + ", " + parseInt(rgbSlider.g, 10) + ", " + parseInt(rgbSlider.b, 10) + ")";
       colorSliderDim = "rgb(" + parseInt(rgbSlider.r, 10) - 25 + ", " + parseInt(rgbSlider.g, 10) - 25 + ", " + parseInt(rgbSlider.b, 10) - 25 + ")";
@@ -396,9 +406,7 @@ function updatePreviewColor(event, mode) {
       ctSlider.querySelector('#sliderKnobInner').style.borderColor = colorSliderBright;
       ctSlider.querySelector('#primaryProgress').style.backgroundColor = colorSliderDim;
       ctSlider.querySelector('#progressContainer').style.backgroundColor = colorSliderDim;
-   }
-   for (var i = colorPreview.length - 1; i >= 0; i--) {
-      colorPreview[i].style.backgroundColor = color;
+      ctColorPreview.style.backgroundColor = color;
    }
 }
 

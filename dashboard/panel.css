@@ -2,11 +2,11 @@
    height: 560px;
 }
 
-#inactive p {
+#connect-msg {
    text-align: center;
 }
 
-#inactive paper-button {
+#connect {
    width: 100%;
 }
 
