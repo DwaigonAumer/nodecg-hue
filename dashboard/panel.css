@@ -22,10 +22,6 @@
    margin: 8px 0px;
 }
 
-paper-button {
-   background: #F5F5F5;
-}
-
 .btn-thin {
    padding: 4px 0px;
    width: 47%;
@@ -37,11 +33,12 @@ paper-button {
 }
 
 .btn-light-select {
+   background-color: #F5F5F5;
    border: 1px solid #D4D4D4;
 }
 
 .btn-light-select[toggles][active] {
-   background: #94F9CE;
+   background-color: #94F9CE;
    border: 1px solid #5BA664;
 }
 
@@ -134,4 +131,32 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+
+#edit-hue-pages {
+  height: 600px;
+  padding: 0px;
+}
+
+.edit-details-container {
+  display: flex;
+  padding: 1px 0 0 0;
+  height: calc(100% - 1px);
+}
+
+.details-listbox {
+  width: 242px;
+  height: 100%;
+  padding: 0;
+  border-bottom-left-radius: 3px;
+  color: white;
+  background-color: #18618B;
+}
+
+.details-info {
+  padding: 15px;
+}
+
+paper-item.iron-selected {
+  background-color: #2F9BDA;
 }

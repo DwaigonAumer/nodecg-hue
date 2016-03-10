@@ -1,6 +1,10 @@
 # nodecg-hue
 > WIP NodeCG bundle to control Philips Hue lighting system
 
+<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-connect.jpg" height="342px">
+<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-individual.jpg" height="342px">
+<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg" height="342px">
+
 ## Extra Usage Steps
 Change directories to ```bundles/nodecg-hue``` and run the following command
 ```
