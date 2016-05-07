@@ -6,9 +6,9 @@
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg" height="342px">
 
 ## Extra Usage Steps
-Change directories to ```bundles/nodecg-hue``` and run the following command
+From the root of your NodecG project change directories to ```bundles/nodecg-hue/dashboard``` and run the following command
 ```
-browserify dashboard/node-hue-api.js -o node-hue-api-browserified.js
+browserify node-hue-api.js -o node-hue-api-browserified.js
 ```
 
 ## Todo
