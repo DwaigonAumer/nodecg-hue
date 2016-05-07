@@ -1,15 +1,21 @@
 # nodecg-hue
 > WIP NodeCG bundle to control Philips Hue lighting system
 
+So far this bundle allows you to control your hue lights as long as your bridge has already been setup with all of your lightbulbs and optionally any information on light groups and scenes.
+
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-connect.jpg" height="342px">
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-individual.jpg" height="342px">
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg" height="342px">
 
 ## Extra Usage Steps
-From the root of your NodecG project change directories to ```bundles/nodecg-hue/dashboard``` and run the following command
+From the root of your NodeCG project change directories to ```bundles/nodecg-hue/dashboard``` and run the following command
 ```
 browserify node-hue-api.js -o node-hue-api-browserified.js
 ```
+
+## Project Quirks
+Scenes can only be updated through a "Group of Lights" selection  
+Scenes ignore the "Transition Time" setting, but not the "Off/On" setting
 
 ## Todo
 ### Short Term
