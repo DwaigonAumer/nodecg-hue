@@ -145,7 +145,7 @@ input::-webkit-inner-spin-button {
 }
 
 .details-listbox {
-  width: 242px;
+  min-width: calc(25% + 5px);
   height: 100%;
   padding: 0;
   border-bottom-left-radius: 3px;
@@ -154,7 +154,14 @@ input::-webkit-inner-spin-button {
 }
 
 .details-info {
+  display: flex;
+  flex-wrap: wrap;
   padding: 15px;
+}
+
+.details-input {
+  margin: 0px 5px;
+  width: calc(33% - 10px);
 }
 
 paper-item.iron-selected {

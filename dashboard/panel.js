@@ -9,6 +9,8 @@ var xInput, yInput, xybInput, xSlider, ySlider, xybSlider;
 var ctInput, ctbInput, ctSlider, ctbSlider;
 var ironPages, selectedScene;
 var connectBtn;
+// Events
+var bridgeDataLoaded = new document.defaultView.CustomEvent('bridgeDataLoaded');
 
 document.addEventListener('WebComponentsReady', function() {
    ironPages = document.querySelector('#main-pages');
@@ -171,10 +173,11 @@ function setupHueApi(bridge) {
          localStorage.setItem('nodecg-hue.hueUsername', uname);
          username = uname;
          hueApi._config.username = uname;
-         refreshHueData(true, function() {
+         document.addEventListener('bridgeDataLoaded', function() {
             Polymer.dom(connectBtn).textContent = "Connect To Bridge";
             ironPages.select("active");
          });
+         refreshHueData(true);
       });
    } else {
       window.hueApi = new hue.HueApi(host, username);
@@ -182,7 +185,7 @@ function setupHueApi(bridge) {
    }
 }
 
-function refreshHueData(forceApiCall, cb) {
+function refreshHueData(forceApiCall) {
    if(forceApiCall || localStorage.getItem('nodecg-hue.hueConfig') === null) {
       hueApi.fullState(function(err, data) {
          if (err) throw err;
@@ -207,7 +210,7 @@ function refreshHueData(forceApiCall, cb) {
          refreshGroupsUi();
          refreshScenesUi();
 
-         if (cb != undefined) { cb(); };
+         document.dispatchEvent(bridgeDataLoaded);
       });
    } else {
       config = JSON.parse(localStorage.getItem('nodecg-hue.hueConfig'));
@@ -222,9 +225,8 @@ function refreshHueData(forceApiCall, cb) {
       refreshGroupsUi();
       refreshScenesUi();
 
-      if (cb != undefined) { cb(); };
+      document.dispatchEvent(bridgeDataLoaded);
    }
-   
 }
 
 function deleteAppsWhitelistEntries() {
