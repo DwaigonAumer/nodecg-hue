@@ -100,6 +100,12 @@ document.addEventListener('WebComponentsReady', function() {
 
    // listener that will send lightState to selected lights
    document.querySelector('#master-send').addEventListener('click', sendLightState);
+
+   // the scrollable areas are used outside of a dialog, which means the 'fit' class has to be removed manually
+   var scrollableDivs = document.querySelectorAll('iron-pages .fit');
+   for (var i = scrollableDivs.length - 1; i >= 0; i--) {
+      scrollableDivs[i].classList.remove('fit');
+   }
    
 });
 
