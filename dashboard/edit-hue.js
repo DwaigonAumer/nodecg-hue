@@ -75,10 +75,12 @@ function refreshLightsUi() {
    // add new lights list items
    // TEMP - when supporting multiple bridges change this to loop through all bridges
    for (var i = 0; i < Object.keys(huePanel.lights).length; i++) {
-      var lightsItem = document.createElement('paper-item');
-      Polymer.dom(lightsItem).textContent = "#" + (i+1) + " | " + huePanel.lights[i+1].name;
-      lightsItem.addEventListener('click', function(event){console.log('pressed item: ' + event.target.parentElement.selected)});
-      Polymer.dom(lightsListbox).appendChild(lightsItem);
+      if (huePanel.lights[i+1] !== undefined) {
+         var lightsItem = document.createElement('paper-item');
+         Polymer.dom(lightsItem).textContent = "#" + (i+1) + " | " + huePanel.lights[i+1].name;
+         lightsItem.addEventListener('click', function(event){console.log('pressed item: ' + event.target.parentElement.selected)});
+         Polymer.dom(lightsListbox).appendChild(lightsItem);
+      }
    }
 
    Polymer.dom(lightsListbox).node.select(0);
