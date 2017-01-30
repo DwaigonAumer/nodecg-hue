@@ -143,7 +143,7 @@ function sendLightState(event) {
       var lbs = document.querySelectorAll('#single-light.scroll-container paper-button');
       for (var i = 0; i < lbs.length; i++) {
          if (lbs[i].active) {
-            var lightId = lbs[i].textContent.trim();
+            var lightId = lbs[i].getAttribute('lightId');
             hueApi.setLightState(lightId, ls).then(logResult).done();
          }
       }
@@ -266,11 +266,12 @@ function refreshLightsUi() {
    selectNone.addEventListener('click', selectNoLights);
    lightButtonContainer.appendChild(selectNone);
 
-   for (var i = 1; i <= Object.keys(lights).length; i++) {
+   for (l in lights) {
       var lightButton = document.createElement('paper-button');
-      lightButton.textContent = i;
+      lightButton.textContent = lights[l].name;
       lightButton.setAttribute('toggles', '');
-      lightButton.className = "btn-light-select";
+      lightButton.setAttribute('lightId', l);
+      lightButton.className = "btn-light-select btn-thin";
       lightButtonContainer.appendChild(lightButton);
    }
 }
