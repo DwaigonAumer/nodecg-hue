@@ -284,7 +284,7 @@ function refreshGroupsUi() {
    }
 
    // add new group buttons
-   for (var i = 1; i < Object.keys(groups).length; i++) {
+   for (var i = 1; i <= Object.keys(groups).length; i++) {
       var groupButton = document.createElement('paper-button');
       groupButton.textContent = groups[i].name;
       groupButton.className = "btn-thin btn-light-select";
