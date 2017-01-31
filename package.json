@@ -10,10 +10,7 @@
   "description": "Control panel for Philips Hue lighting",
   "license": "MIT",
   "dependencies": {
-    "node-hue-api": "^2.0.1"
-  },
-  "devDependencies": {
-    "browserify": "^13.0.0"
+    "node-hue-api": "^2.4.1"
   },
   "nodecg": {
     "compatibleRange": "~0.8.0",
