@@ -14,7 +14,7 @@ browserify node-hue-api.js -o node-hue-api-browserified.js
 ```
 
 ## Project Quirks
-Scenes can only be updated through a "Group of Lights" selection  
+Scenes can only be updated through a "Group of Lights" selection
 Scenes ignore the "Transition Time" setting, but not the "Off/On" setting
 
 ## Todo

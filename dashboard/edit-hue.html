@@ -1,108 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta http-equiv="X-UA-Compatible" content="IE=edge; charset=UTF-8">
-   <meta name="viewport" content="width=device-width" initial-scale="1">
-   <title>edit-panel</title>
-   <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
-   <script src="edit-hue.js"></script>
-   <link rel="import" href="components/iron-pages/iron-pages.html">
-   <link rel="import" href="components/paper-input/paper-input.html">
-   <link rel="import" href="components/paper-tabs/paper-tabs.html">
-   <link rel="import" href="components/paper-listbox/paper-listbox.html">
-   <link rel="import" href="components/paper-item/paper-item.html">
-   <link href="panel.css" rel="stylesheet">
-   <style is="custom-style">
-      paper-tabs {
-          --paper-tabs-selection-bar: {
-              height: 4px;
-          }
-          --paper-tabs-selection-bar-color: #BAD7E8;
-      }
-      paper-item {
-         --paper-item-focused-before: {
-            background: none;
-         }
-      }
-   </style>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge; charset=UTF-8">
+	<meta name="viewport" content="width=device-width" initial-scale="1">
+	<title>edit-panel</title>
+	<script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+	<script src="edit-hue.js"></script>
+	<link rel="import" href="components/iron-pages/iron-pages.html">
+	<link rel="import" href="components/paper-input/paper-input.html">
+	<link rel="import" href="components/paper-tabs/paper-tabs.html">
+	<link rel="import" href="components/paper-listbox/paper-listbox.html">
+	<link rel="import" href="components/paper-item/paper-item.html">
+	<link href="panel.css" rel="stylesheet">
+	<style is="custom-style">
+		paper-tabs {
+			--paper-tabs-selection-bar: {
+				height: 4px;
+			}
+			--paper-tabs-selection-bar-color: #BAD7E8;
+		}
+		paper-item {
+			--paper-item-focused-before: {
+				background: none;
+			}
+		}
+	</style>
 </head>
 <body>
-   <paper-tabs id="edit-hue-tabs" class="hue-tabs">
-      <paper-tab class="section-select-tab">Overview</paper-tab>
-      <paper-tab class="section-select-tab">Lights</paper-tab>
-      <paper-tab class="section-select-tab">Scenes</paper-tab>
-      <paper-tab class="section-select-tab">Schedules</paper-tab>
-   </paper-tabs>
-   <iron-pages id="edit-hue-pages" class="hue-pages" selected="0">
-      <div id="edit-overview" class="edit-details-container">
-         <paper-listbox id="overview-listbox" class="details-listbox">
-            <paper-item>#1 | BRIDGE</paper-item>
-            <paper-item>#2 | BRIDGE</paper-item>
-         </paper-listbox>
-         <div class="details-info">
-            <paper-input label="UTC" value="" readonly></paper-input>
-            <paper-input label="apiversion" value="" readonly></paper-input>
-            <paper-input label="backup" value="" readonly></paper-input>
-            <paper-input label="bridgeid" value="" readonly></paper-input>
-            <paper-input label="dhcp" value=""></paper-input>
-            <paper-input label="factorynew" value="" readonly></paper-input>
-            <paper-input label="gateway" value=""></paper-input>
-            <paper-input label="ipaddress" value=""></paper-input>
-            <paper-input label="linkbutton" value=""></paper-input>
-            <paper-input label="localtime" value="" readonly></paper-input>
-            <paper-input label="mac" value="" readonly></paper-input>
-            <paper-input label="modelid" value="" readonly></paper-input>
-            <paper-input label="name" value=""></paper-input>
-            <paper-input label="netmask" value=""></paper-input>
-            <paper-input label="portalconnection" value="" readonly></paper-input>
-            <paper-input label="portalservices" value=""></paper-input>
-            <paper-input label="portalstate" value="" readonly></paper-input>
-            <paper-input label="proxyaddress" value=""></paper-input>
-            <paper-input label="proxyport" value=""></paper-input>
-            <paper-input label="replacesbridgeid" value="" readonly></paper-input>
-            <paper-input label="swupdate" value=""></paper-input>
-            <paper-input label="swversion" value="" readonly></paper-input>
-            <paper-input label="timezone" value="" readonly></paper-input>
-            <paper-input label="whitelist" value="" readonly></paper-input>
-            <paper-input label="zigbeechannel" value="" readonly></paper-input>
-         </div>
-      </div>
-      <div id="edit-lights" class="edit-details-container">
-         <paper-listbox id="lights-listbox" class="details-listbox">
-            <paper-item>#1 | LIGHTS</paper-item>
-            <paper-item>#2 | LIGHTS</paper-item>
-            <paper-item>#3 | LIGHTS</paper-item>
-            <paper-item>#4 | LIGHTS</paper-item>
-            <paper-item>#5 | LIGHTS</paper-item>
-            <paper-item>#6 | LIGHTS</paper-item>
-            <paper-item>#7 | LIGHTS</paper-item>
-            <paper-item>#8 | LIGHTS</paper-item>
-         </paper-listbox>
-         <div class="details-info">
-            <p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
-         </div>
-      </div>
-      <div id="edit-scenes" class="edit-details-container">
-         <paper-listbox id="scenes-listbox" class="details-listbox">
-            <paper-item>#0 | SCENES</paper-item>
-            <paper-item>#1 | SCENES</paper-item>
-            <paper-item>#2 | SCENES</paper-item>
-            <paper-item>#3 | SCENES</paper-item>
-            <paper-item>#4 | SCENES</paper-item>
-            <paper-item>#5 | SCENES</paper-item>
-            <paper-item>#6 | SCENES</paper-item>
-         </paper-listbox>
-         <div class="details-info">
-            <p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
-         </div>
-      </div>
-      <div id="edit-schedules" class="edit-details-container">
-         <paper-listbox id="schedules-listbox" class="details-listbox">
-            <paper-item>#1 | SCHEDULES</paper-item>
-         </paper-listbox>
-         <div class="details-info">
-            <p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
-         </div>
-      </div>
-   </iron-pages>
+	<paper-tabs id="edit-hue-tabs" class="hue-tabs">
+		<paper-tab class="section-select-tab">Overview</paper-tab>
+		<paper-tab class="section-select-tab">Lights</paper-tab>
+		<paper-tab class="section-select-tab">Scenes</paper-tab>
+		<paper-tab class="section-select-tab">Schedules</paper-tab>
+	</paper-tabs>
+	<iron-pages id="edit-hue-pages" class="hue-pages" selected="0">
+		<div id="edit-overview" class="edit-details-container">
+			<paper-listbox id="overview-listbox" class="details-listbox">
+				<paper-item>#1 | BRIDGE</paper-item>
+				<paper-item>#2 | BRIDGE</paper-item>
+			</paper-listbox>
+			<div class="details-info">
+				<paper-input label="UTC" value="" readonly></paper-input>
+				<paper-input label="apiversion" value="" readonly></paper-input>
+				<paper-input label="backup" value="" readonly></paper-input>
+				<paper-input label="bridgeid" value="" readonly></paper-input>
+				<paper-input label="dhcp" value=""></paper-input>
+				<paper-input label="factorynew" value="" readonly></paper-input>
+				<paper-input label="gateway" value=""></paper-input>
+				<paper-input label="ipaddress" value=""></paper-input>
+				<paper-input label="linkbutton" value=""></paper-input>
+				<paper-input label="localtime" value="" readonly></paper-input>
+				<paper-input label="mac" value="" readonly></paper-input>
+				<paper-input label="modelid" value="" readonly></paper-input>
+				<paper-input label="name" value=""></paper-input>
+				<paper-input label="netmask" value=""></paper-input>
+				<paper-input label="portalconnection" value="" readonly></paper-input>
+				<paper-input label="portalservices" value=""></paper-input>
+				<paper-input label="portalstate" value="" readonly></paper-input>
+				<paper-input label="proxyaddress" value=""></paper-input>
+				<paper-input label="proxyport" value=""></paper-input>
+				<paper-input label="replacesbridgeid" value="" readonly></paper-input>
+				<paper-input label="swupdate" value=""></paper-input>
+				<paper-input label="swversion" value="" readonly></paper-input>
+				<paper-input label="timezone" value="" readonly></paper-input>
+				<paper-input label="whitelist" value="" readonly></paper-input>
+				<paper-input label="zigbeechannel" value="" readonly></paper-input>
+			</div>
+		</div>
+		<div id="edit-lights" class="edit-details-container">
+			<paper-listbox id="lights-listbox" class="details-listbox">
+				<paper-item>#1 | LIGHTS</paper-item>
+				<paper-item>#2 | LIGHTS</paper-item>
+				<paper-item>#3 | LIGHTS</paper-item>
+				<paper-item>#4 | LIGHTS</paper-item>
+				<paper-item>#5 | LIGHTS</paper-item>
+				<paper-item>#6 | LIGHTS</paper-item>
+				<paper-item>#7 | LIGHTS</paper-item>
+				<paper-item>#8 | LIGHTS</paper-item>
+			</paper-listbox>
+			<div class="details-info">
+				<p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
+			</div>
+			</div>
+			<div id="edit-scenes" class="edit-details-container">
+			<paper-listbox id="scenes-listbox" class="details-listbox">
+				<paper-item>#0 | SCENES</paper-item>
+				<paper-item>#1 | SCENES</paper-item>
+				<paper-item>#2 | SCENES</paper-item>
+				<paper-item>#3 | SCENES</paper-item>
+				<paper-item>#4 | SCENES</paper-item>
+				<paper-item>#5 | SCENES</paper-item>
+				<paper-item>#6 | SCENES</paper-item>
+			</paper-listbox>
+			<div class="details-info">
+				<p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
+			</div>
+			</div>
+			<div id="edit-schedules" class="edit-details-container">
+			<paper-listbox id="schedules-listbox" class="details-listbox">
+				<paper-item>#1 | SCHEDULES</paper-item>
+			</paper-listbox>
+			<div class="details-info">
+				<p>This is a sentence that you should read to figure out if this is a good place to put stuff y'know</p>
+			</div>
+		</div>
+	</iron-pages>
 </body>
