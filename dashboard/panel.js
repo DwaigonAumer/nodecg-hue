@@ -391,8 +391,8 @@ function updatePreviewColor(mode) {
 	var color;
 
 	if (mode == 'hsv') {
-		hSlider.querySelector('#sliderKnobInner').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 70%)";
-		hSlider.querySelector('#sliderKnobInner').style.borderColor = "hsl(" + hInput.value + ", 100%, 70%)";
+		hSlider.querySelector('.slider-knob-inner').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 70%)";
+		hSlider.querySelector('.slider-knob-inner').style.borderColor = "hsl(" + hInput.value + ", 100%, 70%)";
 		hSlider.querySelector('#primaryProgress').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
 		hSlider.querySelector('#progressContainer').style.backgroundColor = "hsl(" + hInput.value + ", 100%, 40%)";
 		var hsl = hsv2Hsl(hSlider.parentElement.immediateValue, (sSlider.parentElement.immediateValue / 100.0), (vSlider.parentElement.immediateValue / 100.0))
@@ -411,8 +411,8 @@ function updatePreviewColor(mode) {
 		colorSliderDim = "rgb(" + parseInt(rgbSlider.r, 10) - 25 + ", " + parseInt(rgbSlider.g, 10) - 25 + ", " + parseInt(rgbSlider.b, 10) - 25 + ")";
 		var rgb = kelvin2Rgb(mired2Kelvin(ctSlider.parentElement.immediateValue), ctbSlider.parentElement.immediateValue);
 		color = "rgb(" + parseInt(rgb.r, 10) + ", " + parseInt(rgb.g, 10) + ", " + parseInt(rgb.b, 10) + ")";
-		ctSlider.querySelector('#sliderKnobInner').style.backgroundColor = colorSliderBright;
-		ctSlider.querySelector('#sliderKnobInner').style.borderColor = colorSliderBright;
+		ctSlider.querySelector('.slider-knob-inner').style.backgroundColor = colorSliderBright;
+		ctSlider.querySelector('.slider-knob-inner').style.borderColor = colorSliderBright;
 		ctSlider.querySelector('#primaryProgress').style.backgroundColor = colorSliderDim;
 		ctSlider.querySelector('#progressContainer').style.backgroundColor = colorSliderDim;
 		ctColorPreview.style.backgroundColor = color;
