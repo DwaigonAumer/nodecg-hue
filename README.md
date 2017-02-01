@@ -7,10 +7,16 @@ So far this bundle allows you to control your hue lights as long as your bridge 
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-individual.jpg" height="342px">
 <img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg" height="342px">
 
-## Extra Usage Steps
-From the root of your NodeCG project change directories to ```bundles/nodecg-hue/dashboard``` and run the following command
+## Install
+Make sure you have [NodeCG](https://github.com/nodecg/nodecg) and then enter the code below:
 ```
-browserify node-hue-api.js -o node-hue-api-browserified.js
+cd nodecg/bundles/
+git clone https://github.com/bfaircloo/nodecg-hue
+cd nodecg-hue
+npm install -g bower browserify
+bower install
+npm install
+npm run build
 ```
 
 ## Project Quirks

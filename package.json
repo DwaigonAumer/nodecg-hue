@@ -9,6 +9,9 @@
   "author": "Ben Fairclough",
   "description": "Control panel for Philips Hue lighting",
   "license": "MIT",
+  "scripts": {
+    "build": "browserify dashboard/node-hue-api.js > dashboard/node-hue-api-browserified.js"
+  },
   "dependencies": {
     "node-hue-api": "^2.4.1"
   },
