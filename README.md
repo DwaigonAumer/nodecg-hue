@@ -11,7 +11,7 @@ So far this bundle allows you to control your hue lights as long as your bridge 
 Make sure you have [NodeCG](https://github.com/nodecg/nodecg) and then enter the code below:
 ```
 cd nodecg/bundles/
-git clone https://github.com/bfaircloo/nodecg-hue
+git clone https://github.com/Lypho/nodecg-hue
 cd nodecg-hue
 npm install -g bower browserify
 bower install
