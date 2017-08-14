@@ -3,9 +3,9 @@
 
 So far this bundle allows you to control your hue lights as long as your bridge has already been setup with all of your lightbulbs and optionally any information on light groups and scenes.
 
-<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-connect.jpg" height="342px">
-<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-individual.jpg" height="342px">
-<img alt="hue-panel"src="https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg" height="342px">
+![hue-panel](https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-connect.jpg | width=342)
+![hue-panel](https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-individual.jpg | width=342)
+![hue-panel](https://github.com/bfaircloo/nodecg-hue/raw/screenshots/screenshots/hue-panel-group.jpg | width=342)
 
 ## Install
 Make sure you have [NodeCG](https://github.com/nodecg/nodecg) and then enter the code below:
